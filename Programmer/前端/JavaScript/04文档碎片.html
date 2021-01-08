@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+
+       onload = function () {
+            console.time("test1")
+            for (var i = 0; i < 100000; i++) {
+                var newDiv = document.createElement("div");
+                document.body.appendChild(newDiv)
+
+            }
+            console.timeEnd("test1")
+
+           //文档碎片，性能高
+            console.time("test2")
+            var node = document.createElement('div');
+            for (var i = 0; i < 100000; i++) {
+                var newDiv = document.createElement("div");
+                node.appendChild(newDiv)
+
+            }
+            document.body.appendChild(node)
+            console.timeEnd("test2")
+}
+    </script>
+</head>
+<body>
+</body>
+</html>

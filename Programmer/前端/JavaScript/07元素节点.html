@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #div1 {
+            width: 400px;
+            hights: 200px;
+            background-color: white;
+            border: 1px solid black;
+            margin: 100px auto;
+            text-align: center;
+            line-height: 200px;
+            font-size: 18px;
+        }
+
+        #input1 {
+            width: 380px;
+            height: 30px;
+            font-size: 18px
+        }
+
+        #div2 {
+            width: 400px;
+            height: 500px;
+            background-color: peachpuff;
+            margin: 100px auto;
+        }
+
+        #div1 button {
+            width: 100px;
+            height: 30px;
+            font-size: 18px;
+            background-color: black;
+            color: white;
+            margin-left: 5px;
+            margin-top: 5px
+        }
+
+        #div2 div {
+            border-bottom: 1px dashed gray;
+            padding: 2px;
+            position: relative;
+        }
+
+        #div2 div button {
+            position: absolute;
+            right: 0px
+        }
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+        onload = function () {
+            var oDiv = $('div1')
+            var oDiv2 = $("div2");
+            var aBtns = oDiv.getElementsByTagName("button")
+            var oInput = $('input1')
+            aBtns[0].onclick = function (ev) {
+                if (!oInput.value) {
+                    alert('请输入内容');
+
+                } else {
+                    var newDiv = document.createElement('div');
+                    var otext = document.createTextNode(oInput.value);
+                    newDiv.appendChild(otext);
+                    newDiv.style.backgroundColor = randomColor()
+                    oDiv2.appendChild(newDiv);
+                    oInput.value = ''
+                }
+            }
+            aBtns[1].onclick = function (ev) {
+                oDiv2.removeChild(oDiv2.lastChild)
+            }
+            aBtns[2].onclick = function () {
+                oDiv2.appendChild(oDiv2.lastChild.cloneNode(true))
+            };
+
+        }
+    </script>
+</head>
+<body>
+<div id='div1' title='hello' class='box' xxx='yyy'>
+    <input id="input1" type="text" placeholder="输入内容"/>
+    <br>
+    <button>增</button>
+    <button>删</button>
+    <button>拷</button>
+</div>
+<div id="div2"></div>
+
+</body>
+</html>
+
+

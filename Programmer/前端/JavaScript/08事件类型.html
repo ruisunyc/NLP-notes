@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        #div1 {           
+            width: 200px;
+            height: 200px;
+            background-color: orange;
+            position: relative;
+        }
+
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+ /* 
+                事件类型的种类：
+                    一、鼠标事件（可以绑定在任意的元素节点上）
+                        click      单击
+                        dblclick   双击
+                        mouseover  鼠标移入 
+                        mouseout   鼠标移出
+                        mousemove  鼠标移动（会不停的触发）
+                        mousedown  鼠标按下
+                        mouseup    鼠标抬起
+                        mouseenter 鼠标移入
+                        mouseleave 鼠标移出
+
+                    二、键盘事件（表单元素，全局window）
+                        keydown    键盘按下（如果按下不放手，会一直触发）
+                        keyup      键盘抬起
+
+                        keypress   键盘按下（只支持字符键）
+
+                    三、HTML事件
+                        1、window事件
+                            load    当页面加载完成以后会触发
+                            unload  当页面解构的时候触发(刷新页面，关闭当前页面)  IE浏览器兼容
+                            scroll  页面滚动
+                            resize  窗口大小发生变化的时候触发
+
+                        2、表单事件
+                            blur   失去焦点
+                            focus  获取焦点
+                            select 当我们在输入框内选中文本的时候触发
+                            change 当我们对输入框的文本进行修改并且失去焦点的时候
+                        【注】必须添加在form元素上<form id='f1'><input type="submit"/></form>
+                            submit 当我们点击submit上的按钮才能触发
+                            reset  当我们点击reset上的按钮才能触发
+             */
+        window.onload = function (ev) {
+            var oBtn = $('btn1')
+
+            oBtn.onmousedown = function () {
+                this.innerHTML = "按下"
+
+            };
+            oBtn.onmouseup = function () {
+                this.innerHTML = "抬起"
+            };
+            var oDiv = $('div1');
+            var i = 0;
+            oDiv.onmouseover = function () {
+                this.innerHTML = i++
+            };
+            
+            $('f1').onsubmit = function () {
+               alert( '提交')
+                };
+           $('f1').onreset = function () {
+               alert( '重置')
+           };
+            $('input1').onfocus = function () {
+                this.value = "获取焦点";
+           };
+        }
+    </script>
+</head>
+<body>
+<button id="btn1">按钮</button>
+<div id="div1"></div>
+<form id="f1">
+    <input type="text" value="默认" id="input1" />
+    <input type="submit"/>
+    <input type="reset"/>
+</form>
+</body>
+</html>

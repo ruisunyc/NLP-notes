@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #div1{width: 100px;height: 30px;border: 1px solid black;text-align: center;line-height: 30px;font-size: 10px}
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+       function btnClick() {
+           /* 事件驱动函数，对应button的onclick函数
+           * 通过document.getElementById(id)获取页面对应的标签
+           * node.innnerText 获取标签间的内容
+           * */
+            var oDiv = document.getElementById('div1')
+            oDiv.innerText =alphCode(6)
+        }
+
+
+    </script>
+</head>
+<body>
+<div id="div1">000000</div>
+<button onclick='btnClick()'>获取验证码</button>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+        /*
+               委托：
+                   A委托B去买饭。
+                   A发布任务  委托方
+                   B执行任务  代理方
+           */
+        /*
+              事件委托实现步骤：
+                  1、找到当前节点的父节点或者祖先节点
+                  2、将事件添加到你找到的这个父节点或者祖先节点上
+                  3、找到触发对象，判断触发对象是否是想要的触发对象，进行后续的操作
+           注】事件委托的原理是事件冒泡。
+         */
+        onload = function () {
+            $('ul1').onclick = function (event) {
+                var e = event || window.event;
+                var target = e.target || window.event.srcElement
+                if (target.nodeName.toLowerCase() == 'li') {
+                    target.style.backgroundColor = 'red'
+                }
+
+            };
+            var i = 6
+            $('btn1').onclick = function (event) {
+                var newNode = document.createElement('li');
+                newNode.innerHTML = i++ * 111;
+                $('ul1').appendChild(newNode)
+            };
+
+        }
+
+    </script>
+</head>
+<body>
+<button id="btn1">新增节点</button>
+<ul id="ul1">
+    <li>111</li>
+    <li>222</li>
+    <li>333</li>
+    <li>444</li>
+    <li>555</li>
+</ul>
+</body>
+</html>

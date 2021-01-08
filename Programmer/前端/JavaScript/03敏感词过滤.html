@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #msg {
+            width: 300px;
+            height: 300px;
+            border: 1px solid black;
+            text-align: left;
+            line-height: 30px;
+            font-size: 10px
+        }
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+        function btnClick() {
+            /* 事件驱动函数，对应button的onclick函数
+            * 通过document.getElementById(id)获取页面对应的标签
+            * node.innnerText 获取标签间的内容
+            * */
+            var otxt1 = document.getElementById('txt1');
+            var oDiv = document.getElementById('msg')
+            // alert(otxt1.value)
+            oDiv.innerText = filteSensit(otxt1.value)
+
+        }
+
+
+    </script>
+</head>
+<body>
+<textarea name="" id="txt1" cols="50" rows="10">tmd色色,美丽</textarea>
+<button onclick='btnClick()'>发布</button>
+<div id="msg"></div>
+</body>
+</html>
+
+

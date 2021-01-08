@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>       
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+          /*
+                键码:只在keydown下支持。
+                【注】不管是在大写字母还是小写字母的情况下，返回的统一都是大写字母的ASIIC码值。
+                    keyCode
+                    which
+
+
+                字符码: 只在keypress下支持
+                【注】区分大小写，并且按下的时候我当前按下这个键的ASCII码值。
+                【注】
+                    charCode
+                    which
+             */
+        onload = function () {
+            onkeydown = function (ev) {
+                var e = ev || event
+                var which = e.keyCode||e.which
+                if (which == 13 && e.ctrlKey) { //快捷键
+                    alert('hello')
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

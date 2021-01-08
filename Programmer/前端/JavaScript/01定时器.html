@@ -1,0 +1,71 @@
+
+<head>
+<script>
+        window.onload = function (ev) {
+            var i= 0
+            var timer = null
+            var isRunning = false
+            function startFunc() {
+                // 开始函数
+                timer = setInterval(function () {
+                    i++;
+                    $('sec').innerHTML = doubleNum(i % 60)
+                    $('min').innerText = doubleNum(parseInt(i/60)%60)
+                    $('hour').innerText = doubleNum(parseInt(i/3600))
+
+                },1000);
+
+            }
+            function pasieFunc() {
+            // 暂停函数
+                clearInterval(timer)
+
+            }
+            $('reset').onclick = function () {
+                // 复位按钮
+
+                clearInterval(timer)
+                $('btn1').innerHTML = '开始'
+                isRunning = false
+                i=0
+                $('sec').innerHTML = '00'
+                $('min').innerHTML = '00'
+                $('hour').innerHTML = '00'
+            }
+            $('btn1').onclick = function () {
+                if (!isRunning) {
+                    $('btn1').innerHTML = '暂停';
+                    isRunning = true;
+                    startFunc();
+                } else {
+                    $('btn1').innerText = '开始'
+                    isRunning = false
+                    pasieFunc()
+                }
+
+            }
+        }
+    </script>
+    <script>
+        var i=0
+        var timer = setInterval(function () {
+            if (i == 10) {
+                clearInterval(timer)
+            }
+            var oDiv = document.getElementById('msg')
+            oDiv.innerText = new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString()
+        },1000)
+</script>
+</head>
+<body>
+<div id="msg">
+    <span id="hour">00</span>
+    <span>:</span>
+    <span id="min">00</span>
+    <span >:</span>
+    <span id="sec">00</span>
+    <br/>
+    <button id="btn1">开始</button>
+    <button id='reset'>复位</button>
+</div>
+</body>

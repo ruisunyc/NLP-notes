@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        div {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            position: absolute;
+            border-radius: 50%;
+        }
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+        onload = function () {
+            var arr = document.getElementsByTagName('div')
+            document.onmousemove = function (ev) {
+                var e = ev || window.event            
+                for (var i = 0; i <arr.length-1; i++) {
+                    arr[i].style.left = arr[i+1].offsetLeft + 'px'
+                    arr[i].style.top = arr[i+1].offsetTop + 'px'
+                }
+                arr[arr.length - 1].style.left = e.clientX + 'px'
+                arr[arr.length - 1].style.top = e.clientY + 'px'
+            };
+        }
+
+        function stopBubble(e) {
+            //快浏览器兼容
+            e.stopPropagation ? e.stopPropagation() : e.cancelBubble = true
+
+        }
+    </script>
+</head>
+<body>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+
+
+</body>
+</html>

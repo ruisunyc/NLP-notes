@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>       
+        #div1 {
+            width: 400px;
+            hights: 200px;
+            background-color: white;
+            border: 1px solid black;
+            margin: 100px auto;
+            text-align: center;
+            line-height: 200px;
+            font-size: 18px;
+        }
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+        function randomColor() {
+            var str = "rgba(" + parseInt(Math.random() * 256) + ","
+            + parseInt(Math.random() * 256) +","+parseInt(Math.random()*256)+",1)"
+            return str;
+        }
+        onload = function () {
+            var speed = 5
+            var count = 0
+            var oDiv = $("div1")
+            setInterval(function () {
+                oDiv.style.color = randomColor()
+                var icur = parseInt(getStyle(oDiv, 'fontSize'));
+                oDiv.style.fontSize = icur+speed+'px'
+                count++;
+                if (count % 6 == 0) {
+                    speed*=-1
+                }
+
+            },1000);
+        }
+    </script>
+</head>
+<body>
+<div id='div1'>div</div>
+</body>
+</html>
+
+

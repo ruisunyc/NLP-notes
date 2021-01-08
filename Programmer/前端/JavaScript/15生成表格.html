@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        div {
+            padding: 50px
+        }
+
+        #t1 tr td {
+            width: 100px;
+            height: 30px
+        }
+
+    </style>
+    <script src="E:\git\综合平台数据库网站\t_biding_info_project\static\js\tool.js"></script>
+    <script>
+        onload = function () {
+            var oRow = $('row');
+            var oCol = $('col');
+            var oBtn = $('btn1');
+            var oT1 = $('t1');
+            oT1.onclick = function (ev) {
+                var e = ev||window.event
+                var target = e.target || window.event.srcElement
+                if (target.nodeName.toLowerCase() == 'button') {
+                    oT1.removeChild(target.parentNode.parentNode)
+                }
+            };
+
+            oBtn.onclick = function () {
+                if (!oRow.value || !oCol.value) {
+                    alert('没有数据');
+                } else {
+                    for (var i = 0; i < oRow.value; i++) {
+                        var oTr = document.createElement('tr')
+                        for (var j = 0; j < oCol.value; j++) {
+                            var oTd = document.createElement('td');
+                            oTr.appendChild(oTd)
+                        }
+                        var oClose = document.createElement('td');
+                        oClose.innerHTML = '<button>删除</button>'
+                        oTr.appendChild(oClose)
+                        oT1.appendChild(oTr)
+                    }
+
+                }
+
+            };
+        }
+
+    </script>
+</head>
+<body>
+<input type="text" placeholder="行" id="row"/>
+<input type="text" placeholder="列" id="col"/>
+<button id="btn1">生成</button>
+<table id="t1" border="1"></table>
+</body>
+</html>
