@@ -280,7 +280,31 @@
               return dfs(cur)
       ```
 
-6. #### [1155. 掷骰子的N种方法](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/)
+6. #### [449. 序列化和反序列化二叉搜索树](https://leetcode-cn.com/problems/serialize-and-deserialize-bst/)
+
+      ```python
+      class Codec:
+          def serialize(self,root:TreeNode)->str:
+              def dfs(root):
+                  if not root:return []
+                  return dfs(root.left)+dfs(root.right)+[root.val]
+              return ','.join(map(str,dfs(root)))
+          def deserialize(self,data:str)->TreeNode:
+              if not data:return
+              data = list(map(int,data.split(',')))
+              def dfs(low=float('-inf'),high = float('inf')):
+                  if not data or data[-1]<low or data[-1]>high:return 
+                  cur = data.pop()
+                  root = TreeNode(cur)            
+                  root.right = dfs(cur,high)
+                  root.left = dfs(low,cur)
+                  return root
+              return dfs()
+      ```
+
+      
+
+7. #### [1155. 掷骰子的N种方法](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/)
 
       ```python
       #记忆化搜索
@@ -297,7 +321,7 @@
               return count%(10**9 + 7)
       ```
 
-7. #### [124. 二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
+8. #### [124. 二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
 
       ```python
       class Solution:
@@ -314,7 +338,7 @@
                   
       ```
 
-8. #### [103. 二叉树的锯齿形层序遍历](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/)
+9. #### [103. 二叉树的锯齿形层序遍历](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/)
 
       ```python
       class Solution:
@@ -358,7 +382,7 @@
               return ans
       ```
 
-9. #### [129. 求根到叶子节点数字之和](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)
+10. #### [129. 求根到叶子节点数字之和](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)
 
       ```python
       #DFS
