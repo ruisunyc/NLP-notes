@@ -27,7 +27,6 @@
            m,n=len(grid),len(grid[0])  
            def bfs(i,j):
                q = deque([(i,j)])
-               grid[i][j]='0'
                while q:
                    i,j = q.popleft()
                    for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
@@ -39,7 +38,8 @@
            for i in range(m):
                for j in range(n):
                    if grid[i][j]=='1':
-                       ans+=1
+                       grid[i][j]='0'
+                       ans+=1                    
                        bfs(i,j)
            return ans
    ```
@@ -90,7 +90,6 @@
            """
            Do not return anything, modify board in-place instead.
            """
-   
            row = [set(map(str,[i for i in range(1,10)])) for _ in range(9)]
            col = [set(map(str,[i for i in range(1,10)])) for _ in range(9)]
            block = [set(map(str,[i for i in range(1,10)])) for _ in range(9)]
@@ -118,7 +117,7 @@
                    block[x//3*3+y//3].add(one)
            dfs(0)
    ```
-
+   
 3. #### [450. 删除二叉搜索树中的节点](https://leetcode-cn.com/problems/delete-node-in-a-bst/)
 
       ```python
@@ -146,7 +145,41 @@
               return root      
       ```
 
-4. #### [863. 二叉树中所有距离为 K 的结点](https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree/)
+4. #### [701. 二叉搜索树中的插入操作](https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/)
+
+      ```python
+      class Solution:
+          def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+              if not root:return TreeNode(val)
+              if root.val<val:
+                  root.right = self.insertIntoBST(root.right,val)
+              else:
+                  root.left = self.insertIntoBST(root.left,val)
+              return root
+      ```
+
+      ```python
+      class Solution:
+          def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+              if not root:return TreeNode(val)
+              p = root
+              while p:
+                  if p.val<val:
+                      if p.right:p = p.right
+                      else:
+                          p.right = TreeNode(val)
+                          break
+                  else:
+                      if p.left:p = p.left
+                      else:
+                          p.left = TreeNode(val)
+                          break
+              return root
+      ```
+
+      
+
+5. #### [863. 二叉树中所有距离为 K 的结点](https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree/)
 
       ```python
       class Solution:
@@ -173,7 +206,7 @@
               return tmp
       ```
 
-5. #### [297. 二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/)
+6. #### [297. 二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/)
 
       ```python
       class Codec:
@@ -280,7 +313,7 @@
               return dfs(cur)
       ```
 
-6. #### [449. 序列化和反序列化二叉搜索树](https://leetcode-cn.com/problems/serialize-and-deserialize-bst/)
+7. #### [449. 序列化和反序列化二叉搜索树](https://leetcode-cn.com/problems/serialize-and-deserialize-bst/)
 
       ```python
       class Codec:
@@ -304,7 +337,7 @@
 
       
 
-7. #### [1155. 掷骰子的N种方法](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/)
+8. #### [1155. 掷骰子的N种方法](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/)
 
       ```python
       #记忆化搜索
@@ -321,7 +354,7 @@
               return count%(10**9 + 7)
       ```
 
-8. #### [124. 二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
+9. #### [124. 二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
 
       ```python
       class Solution:
@@ -338,7 +371,7 @@
                   
       ```
 
-9. #### [103. 二叉树的锯齿形层序遍历](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/)
+10. #### [103. 二叉树的锯齿形层序遍历](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/)
 
       ```python
       class Solution:
@@ -382,36 +415,36 @@
               return ans
       ```
 
-10. #### [129. 求根到叶子节点数字之和](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)
+11. #### [129. 求根到叶子节点数字之和](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)
 
-      ```python
-      #DFS
-      class Soloution:
-          def sumNumbers(self,root:TreeNode)->int: #DFS
-              def dfs(root,cur):
-                  if not root:return 0
-                  cur=cur*10+root.val
-                  if not root.left and not root.right:
-                      return cur
-                  return dfs(root.left,cur)+dfs(root.right,cur)
-          	return dfs(root,0)
-      ```
+         ```python
+         #DFS
+         class Soloution:
+             def sumNumbers(self,root:TreeNode)->int: #DFS
+                 def dfs(root,cur):
+                     if not root:return 0
+                     cur=cur*10+root.val
+                     if not root.left and not root.right:
+                         return cur
+                     return dfs(root.left,cur)+dfs(root.right,cur)
+             	return dfs(root,0)
+         ```
 
-      ```python
-      #BFS
-      class Solution:
-          def sumNumbers(self,root:TreeNode)->int:
-              ans = 0
-              if not root:return 0
-              q = collections.deque([(root,root.val)])
-              while q:
-                  cur,val = q.popleft()
-                  if not cur.left and not cur.right:ans+=val
-                  if cur.left:
-                      q.append((cur.left,val*10+cur.left.val))
-                  if cur.right:
-                      q.append((cur.right,val*10+cur.right.val))
-              return ans
-      ```
+         ```python
+         #BFS
+         class Solution:
+             def sumNumbers(self,root:TreeNode)->int:
+                 ans = 0
+                 if not root:return 0
+                 q = collections.deque([(root,root.val)])
+                 while q:
+                     cur,val = q.popleft()
+                     if not cur.left and not cur.right:ans+=val
+                     if cur.left:
+                         q.append((cur.left,val*10+cur.left.val))
+                     if cur.right:
+                         q.append((cur.right,val*10+cur.right.val))
+                 return ans
+         ```
 
-      
+         
