@@ -28,6 +28,7 @@ python manage.py makemigrations learning_logs #Model迁移数据库
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U pytorch==1.1.0
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tqdm
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U sklearn
+   pip install cupy-cuda100==7.0 -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
    ```
 
 2. [Github加速方法](https://www.tianqiweiqi.com/github-open.html)
@@ -57,6 +58,40 @@ python manage.py makemigrations learning_logs #Model迁移数据库
    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
    defaults
+   ```
+
+6. tensor/numpy/list
+
+   ```python
+   1.1 list 转 numpy
+   
+   ndarray = np.array(list)
+   
+   1.2 numpy 转 list
+   
+   list = ndarray.tolist()
+   
+   2.1 list 转 torch.Tensor
+   
+   tensor=torch.Tensor(list)
+   
+   2.2 torch.Tensor 转 list
+   
+   先转numpy，后转list
+   
+   list = tensor.numpy().tolist()
+   
+   3.1 torch.Tensor 转 numpy
+   
+   ndarray = tensor.numpy()
+   
+   *gpu上的tensor不能直接转为numpy
+   
+   ndarray = tensor.cpu().numpy()
+   
+   3.2 numpy 转 torch.Tensor
+   tensor = torch.from_numpy(ndarray)
+   
    ```
 
    
