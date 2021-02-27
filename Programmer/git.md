@@ -71,3 +71,17 @@ git push #远程推送
 （查看隐藏答案，输入:show solution）
 
 ![image-20201209095020832](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20201209095020832.png)
+
+##  四、环境配置
+
+```python
+$ git config --global user.name "Firstname Lastname" #设置使用Git 时的姓名
+$ git config --global user.email "your_email@example.com" #设置使用Git时的邮箱地址
+$ git config --global color.ui auto #将 color.ui 设置为 auto 界面好看
+$ ssh-keygen -t rsa -C "your_email@example.com"# 设置ssh key，按回车即可
+$ cat ~/.ssh/id_rsa.pub #查看公钥
+$ ssh -T git@github.com #打开github，添加new ssh key，检验结果
+```
+
+
+

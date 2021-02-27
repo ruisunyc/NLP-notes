@@ -94,5 +94,29 @@ python manage.py makemigrations learning_logs #Model迁移数据库
    
    ```
 
+   pytorch 可视化
+   
+   ```shell
+   tensorboard --logdir log
+   ```
+   
+   单例模式
+   
+   ```python
+   class Singleton:
+       _lock = threading.Lock()
+       def __new__(cls,*arg,**kwargs):
+           if not hasattr(cls,'_instance'):
+               with Singleton._lock:
+                   if not hasattr(cls,'_instance'):
+                       Singleton._instance = super().__new__(cls)
+           return Singleton._instance
+   def task(arg):
+       print(Singleton())
+   for i in range(10):
+       t = threading.Thread(target = task,args=[i,])
+       t.start()
+   ```
+   
    
 

@@ -1,3 +1,15 @@
+[下载安装](!https://hub.docker.com/editions/community/docker-ce-desktop-windows/)
+
+思想：硬件共享，软件隔离
+
+测试
+
+```shell
+docker run hello-world   测试是否成功  官方的测试镜像
+docker info    查看信息
+docker version   查看版本　
+```
+
 step1:阿里云
 
 在[阿里云](!https://cr.console.aliyun.com/repository/cn-shenzhen/shanxidaxue/pytorch/details)创建地址，命名空间，镜像
@@ -38,11 +50,15 @@ python hello_world.py
 step4:登录命令
 
 ```shell
-sudo docker login --username=你的用户名 registry.cn-shenzhen.aliyuncs.com #登录
+sudo docker login --username=sunruirui1814@163.com registry.cn-shenzhen.aliyuncs.com
+ #登录
 docker pull registry.cn-shanghai.aliyuncs.com/tcc-public/python:3 #拉去python环境
+docker pull registry.cn-shanghai.aliyuncs.com/tcc-public/pytorch:1.4-cuda10.1-py3 #拉取GPU环境
 docker build -t registry.cn-shenzhen.aliyuncs.com/shanxidaxue/pytorch:1.0 . #版本号1.0可以更改
+docker build -t registry.cn-shenzhen.aliyuncs.com/shanxidaxue/torch_cuda:1.0 .
 docker run registry.cn-shenzhen.aliyuncs.com/shanxidaxue/pytorch:1.0 sh run.sh #CPU镜像
-nvidia-docker run registry.cn-shenzhen.aliyuncs.com/shanxidaxue/pytorch:1.0 sh run.sh #GPU镜像
+docker run registry.cn-shenzhen.aliyuncs.com/shanxidaxue/torch_cuda:1.0 sh run.sh
+nvidia-docker run registry.cn-shenzhen.aliyuncs.com/shanxidaxue/torch_cuda:1.0 sh run.sh #GPU镜像
 docker push registry.cn-shenzhen.aliyuncs.com/shanxidaxue/pytorch:1.0 #推送镜像
 ```
 
@@ -59,4 +75,12 @@ registry.cn-shenzhen.aliyuncs.com/shanxidaxue/pytorch:1.0 #镜像路径
 
 
 
+
+```shell
+docker run -it registry.cn-shanghai.aliyuncs.com/tcc-public/pytorch:1.4-cuda10.1-py3 /bin/bash #CPU
+docker run --gpus all -it registry.cn-shanghai.aliyuncs.com/tcc-public/pytorch:1.4-cuda10.1-py3 /bin/bash
+docker run -it -v /home/linux/桌面/tianchi_cuda/tcdata:/workspace/ registry.cn-shanghai.aliyuncs.com/tcc-public/pytorch:1.4-cud0.1-py3 /bin/bash #路径映射，本地绝对路径/home/linux/桌面/tianchi_cuda/tcdata映射到docker中/workspace
+docker rmi -f id #删除镜像
+docker rmi -f $(docker images | grep "none" | awk '{print $3}') #删除none镜像
+```
 
