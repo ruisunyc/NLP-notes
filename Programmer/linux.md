@@ -49,7 +49,7 @@ sudo chmod 777 home #修改文件权限
 deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
   ```
   
-  
+## 查看硬件信息
 
 ```shell
 yum install vim
@@ -66,7 +66,11 @@ df -h #查看硬盘占用
 du -h --max-depth=1 #查看所有占用大小
 w #查看登录用户
 systemctl start  atd.service #开启定时at服务
-
+cat /proc/cpuinfo | grep name | sort | uniq #查看CPU型号
+cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l #查看CPU数量
+cat /proc/cpuinfo| grep "cpu cores"| uniq #查看CPU核数
+cat /proc/cpuinfo| grep "processor"| wc -l #查看逻辑CPU数目
+lscpu #CPU信息概览
 ```
 
 centos网络配置

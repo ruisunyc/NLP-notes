@@ -10,8 +10,6 @@
   python manage.py startapp learning_logs #创建APP
 python manage.py makemigrations learning_logs #Model迁移数据库
   python manage.py migrate #执行迁移
-  
-  
   ```
   
   ![image-20201225190202327](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20201225190202327.png)
@@ -24,8 +22,11 @@ python manage.py makemigrations learning_logs #Model迁移数据库
 
    ```shell
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tensorflow==2.0.0
+   pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tensorflow==1.6.0
+   pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U PyMySQL==0.8.0
+   pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U DBUtils==1.2
    pip install  -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tensorboardX
-   pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U pytorch==1.1.0
+   pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn -U pytorch==1.1.0
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tqdm
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U sklearn
    pip install cupy-cuda100==7.0 -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
@@ -118,5 +119,56 @@ python manage.py makemigrations learning_logs #Model迁移数据库
        t.start()
    ```
    
+   装饰器
    
+   ```python
+   import os
+   import time
+   import logging
+   
+   logger = logging.getLogger()
+   logger.setLevel(20)
+   
+   execute_time = time.strftime("%Y_%m_%d")
+   
+   filepath = '/%s_log.log' % execute_time
+   file_dir_path = os.path.dirname(filepath)
+   
+   if not os.path.exists(file_dir_path):
+       os.makedirs(file_dir_path)
+   file_handler = logging.FileHandler(filepath, encoding='utf-8')
+   formatter = logging.Formatter("%(asctime)s - 【%(levelname)s】 - %(message)s")
+   file_handler.setFormatter(formatter)
+   logger.addHandler(file_handler)
+   
+   
+   def log_decorator(message=None):
+       def log_fun(func):
+           def execute_fun(*args, **kwargs):
+               try:
+                   if len(args) == 0 and len(kwargs) == 0:
+                       params_data = None
+                   else:
+                       params_data = args if args else kwargs if kwargs else None
+                       if str(params_data[0]).find("object") != -1:
+                           params_data = params_data[1:]
+                       if len(params_data) == 0:
+                           params_data = None
+                   if params_data is not None:
+                       params_info = "，Execute Arguments：【{0}】".format(str(params_data))
+                   else:
+                       params_info = ''
+                   execute_result = func(*args, **kwargs)
+                   logger.info("【{0}】-".format(func.__name__) + message + "PASS" + params_info)
+                   return execute_result
+               except Exception as e:
+                   logger.error("【{0}】-".format(func.__name__) + message + "Fail" + params_info + "\n\t" + str(e) + "\n", exc_info=1)
+                   raise e
+           return execute_fun
+       return log_fun
+   ```
+   
+   
+
+
 
