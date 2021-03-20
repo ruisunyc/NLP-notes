@@ -21,6 +21,8 @@ python manage.py makemigrations learning_logs #Model迁移数据库
 1. python镜像源
 
    ```shell
+   http://mirrors.ustc.edu.cn/
+   http://mirrors.sohu.com/
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tensorflow==2.0.0
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U tensorflow==1.6.0
    pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -U PyMySQL==0.8.0
@@ -34,7 +36,7 @@ python manage.py makemigrations learning_logs #Model迁移数据库
 
 2. [Github加速方法](https://www.tianqiweiqi.com/github-open.html)
 
-2. [python变量可视化]( http://pythontutor.com/live.html#mode=edit)
+3. [python变量可视化]( http://pythontutor.com/live.html#mode=edit)
 
 4. [python环境](https://www.jianshu.com/p/e191f9dc1186)
 
@@ -96,13 +98,13 @@ python manage.py makemigrations learning_logs #Model迁移数据库
    ```
 
    pytorch 可视化
-   
+
    ```shell
    tensorboard --logdir log
    ```
-   
+
    单例模式
-   
+
    ```python
    class Singleton:
        _lock = threading.Lock()
@@ -118,9 +120,9 @@ python manage.py makemigrations learning_logs #Model迁移数据库
        t = threading.Thread(target = task,args=[i,])
        t.start()
    ```
-   
+
    装饰器
-   
+
    ```python
    import os
    import time
@@ -167,7 +169,7 @@ python manage.py makemigrations learning_logs #Model迁移数据库
            return execute_fun
        return log_fun
    ```
-   
+
    
 
 

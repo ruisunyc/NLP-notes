@@ -71,6 +71,8 @@ cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l #查看CPU数量
 cat /proc/cpuinfo| grep "cpu cores"| uniq #查看CPU核数
 cat /proc/cpuinfo| grep "processor"| wc -l #查看逻辑CPU数目
 lscpu #CPU信息概览
+tar -zcf #压缩文件
+tar -zxf #解压缩
 ```
 
 centos网络配置
@@ -80,6 +82,9 @@ cat /etc/sysconfig/network-scripts/ifcfg-ens33
 vi /etc/sysconfig/network-scripts/ifcfg-ens33 
 systemctl restart network #重启网络
 ping www.baidu.com #测试
+systemctl status firewalld.service #查看防火墙
+systemctl stop firewalld.service    #关闭防火墙
+systemctl disable firewalld.service #禁止防火墙
 ```
 
 vim编辑器
