@@ -1,4 +1,8 @@
-### 一、[hdfs安装部署](https://www.cnblogs.com/youngchaolin/p/11992600.html )
+## 大数据基础教程
+
+[TOC]
+
+## 一、[hdfs安装部署](https://www.cnblogs.com/youngchaolin/p/11992600.html )
 
 - 心得
 
@@ -20,7 +24,7 @@ systemctl stop firewalld.service*#停止firewall*
 systemctl disable firewalld.service*#禁止firewall开机启动*
 ```
 
-### 二、hadoop基础操作
+## 二、hadoop基础操作
 
 ```shell
 ssh  hadoop-salve1 #登录到服务器hadoop-salve1
@@ -46,21 +50,21 @@ jupyter notebook --ip 0.0.0.0 --allow-root #远程服务器打开jupyter
 hive --service metastore & #运行hive之前执行
 ```
 
-### 三、大数据时代
+## 三、大数据时代
 
-### 技术支撑
+### 3.1 技术支撑
 
 - 存储设备
 - CPU计算能力（摩尔定律-》多核）
 - 网络带宽
 
-### 数据源生产方式
+### 3.2 数据源生产方式
 
 - 第一阶段 运营式系统阶段（eg.超市零售系统）
 - 第二阶段 用户原创内容阶段（eg.知乎、豆瓣、微博）
 - 第三阶段 感知式系统阶段（eg.传感器、摄像头、物联网采集）
 
-###  大数据概念
+###  3.3 大数据概念
 
 特点：4V
 
@@ -72,7 +76,7 @@ hive --service metastore & #运行hive之前执行
 
 - Value 价值低（突发事件少，单点价值高）
 
-###  大数据关键技术
+###  3.4 大数据关键技术
 
 - 分布式存储 HDFS/ HBASE/ Nosql /newSql
 - 分布式计算 MapReduce/ Spark （微批处理秒级计算）/Flink（连续流毫秒级计算）
@@ -103,17 +107,16 @@ Spark改进：
 思考：spark和Hadoop关系
 
 spark可以替代Hadoop的mapReduce，与Hadoop中的hdfs配合使用
-## spark应用
 
 ![image-20210314172731055](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210314172731055.png)
 
-
-
-## spark基本概念
+## 四、Spark Core
 
 ![image-20210314173021016](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210314173021016.png)
 
-RDD（Resiliennt Distributed Datasets）：（多台机器内存分区，弹性：计算过程中动态调整分区数量），数据少可分布在一台机器内存，数据多可分布在多台机器内存中
+RDD（Resiliennt Distributed Datasets）
+
+多台机器内存分区，弹性：计算过程中动态调整分区数量，数据少可分布在一台机器内存，数据多可分布在多台机器内存中
 
 - 只读的分布式分区（对象）集合
 - RDD依赖关系：
@@ -126,8 +129,6 @@ DAG（有向无环图）:
 
 ![image-20210314173833456](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210314173833456.png)
 
-### Demo
-
 ```python
 from pyspark import SparkConf,SparkContext
 conf = SparkConf().setMaster("local").setAppName('My APP')
@@ -139,7 +140,7 @@ numBs = logData.filter(lambda x:'C01' in x).count()
 print(numAs,numBs)
 ```
 
-### spark集群安装
+### 4.1 spark集群安装
 
 spark建立在hadoop基础上
 
@@ -165,7 +166,7 @@ http://192.168.1.185:8088 # 打开Hadoop网页
   ```
   
 
-### RDD创建
+### 4.2 RDD创建
 
 - sc.TextFile()方法
 
@@ -184,158 +185,150 @@ http://192.168.1.185:8088 # 打开Hadoop网页
   rdd.collect() #显示结果
   ```
 
-### RDD操作
+### 4.3 RDD操作
 
- - Transformation(转换操作)
+#### Transformation(转换操作)
 
-   ![image-20210316194154453](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210316194154453.png)
+![image-20210316194154453](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210316194154453.png)
 
-   
+- filter(func)
 
-   
+  ```shell
+  #student.txt
+  C01,N0101,82
+  C01,N0102,59
+  C01,N0103,65
+  C02,N0201,81
+  C02,N0202,82
+  C02,N0203,79
+  C03,N0301,56
+  C03,N0302,92
+  ```
+
+  ```python
+  lines = sc.textFile("/tmp/student.txt") #生成RDD对象lines
+  linesfilter = lines.filter(lambda line:'01' in line) #rdd.filter(func),跟Python filter类似
+  linesfilter.collect() #显示结果
+  ```
+
+- map(func)
+
+  ```python
+  data = [1,2,3] #python列表
+  rdd1 = sc.parallelize(data) # 转成RDD对象
+  rdd1.map(lambda x:x+5).collect() #rdd.map(func)，跟Python map类似
+  ```
+  
+- mapValues(func)
 
    ```python
-   #student.txt
-   C01,N0101,82
-   C01,N0102,59
-   C01,N0103,65
-   C02,N0201,81
-   C02,N0202,82
-   C02,N0203,79
-   C03,N0301,56
-   C03,N0302,92
+   sc.parallelize([('a',1),('b',1),('c',1),('b',1),('b',1),('a',1)]).mapValues(lambda x:x+1).collect() #对value每个值进行map操作加1
    ```
 
-   - filter(func)
+- flatMap(func)
 
-     ```python
-     lines = sc.textFile("/tmp/student.txt") #生成RDD对象lines
-     linesfilter = lines.filter(lambda line:'01' in line) #rdd.filter(func),跟Python filter类似
-     linesfilter.collect() #显示结果
-     ```
+  ```python
+  rdd = sc.textFile("/tmp/student.txt") #生成RDD对象lines
+  rdd1= rdd.flatMap(lambda line:line.split(',')) #rdd.flatMap(func),先map再展平
+  rdd2.collect() #显示结果
+  ```
+  
+- groupByKey
+  ```python
+  sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).groupByKey().collect() #rdd.groupByKey(),返回(key，iterable(list))列表
+ #返回(key，iterable),[('a', <pyspark.resultiterable.ResultIterable object at 0x7ffac2f987b8>), ('b', <pyspark.resultiterable.ResultIterable object at 0x7ffac2f987f0>), ('c', <pyspark.resultiterable.ResultIterable object at 0x7ffac2f98748>)] ,为RDD对象[('a',(1,1)),('b',(1,1)),('c',1)]
+  ```
+  
+- reduceByKey(func)
 
-   - map(func)
+  ```python
+  sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).reduceByKey(lambda x,y:x+y).collect() #rdd.reduceByKey(func),统计分组后每个key对应values列表元素之和，[('a', 2), ('b', 2), ('c', 1)],先groupByKey再reduce
+  #等价于
+  sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).groupByKey().map(lambda t:(t[0],sum(t[1]))).collect() #[('a', (1, 1)), ('b', (1, 1)), ('c', 1)]
+  sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).reduceByKey(lambda x,y:(x,)+(y,)).collect() #[('a', (1, 1)), ('b', (1, 1)), ('c', 1)]
+  ```
+  
+ - sortByKey(func)
 
-     ```python
-     data = [1,2,3] #python列表
-     rdd1 = sc.parallelize(data) # 转成RDD对象
-     rdd1.map(lambda x:x+5).collect() #rdd.map(func)，跟Python map类似
-     ```
-     
-   - mapValues(func)
-   
-      ```python
-      sc.parallelize([('a',1),('b',1),('c',1),('b',1),('b',1),('a',1)]).mapValues(lambda x:x+1).collect() #对value每个值进行map操作加1
-      ```
-   
-   - flatMap(func)
-   
-     ```python
-     rdd = sc.textFile("/tmp/student.txt") #生成RDD对象lines
-     rdd1= rdd.flatMap(lambda line:line.split(',')) #rdd.flatMap(func),先map再展平
-     rdd2.collect() #显示结果
-     ```
-     
-   - groupByKey
-     ```python
-     sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).groupByKey().collect() #rdd.groupByKey(),返回(key，iterable(list))列表
-    #返回(key，iterable),[('a', <pyspark.resultiterable.ResultIterable object at 0x7ffac2f987b8>), ('b', <pyspark.resultiterable.ResultIterable object at 0x7ffac2f987f0>), ('c', <pyspark.resultiterable.ResultIterable object at 0x7ffac2f98748>)] ,为RDD对象[('a',(1,1)),('b',(1,1)),('c',1)]
-     ```
-     
-   - reduceByKey(func)
-   
-     ```python
-     sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).reduceByKey(lambda x,y:x+y).collect() #rdd.reduceByKey(func),统计分组后每个key对应values列表元素之和，[('a', 2), ('b', 2), ('c', 1)],先groupByKey再reduce
-     #等价于
-     sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).groupByKey().map(lambda t:(t[0],sum(t[1]))).collect() #[('a', (1, 1)), ('b', (1, 1)), ('c', 1)]
-     sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).reduceByKey(lambda x,y:(x,)+(y,)).collect() #[('a', (1, 1)), ('b', (1, 1)), ('c', 1)]
-     ```
-     
-    - sortByKey(func)
-   
-      ```python
-      sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).sortByKey().collect() #按照key升序
-      sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).reduceByKey(lambda a,b:a+b).sortByKey(False).collect() #统计词频按照key进行降序
-      ```
-   
-   - sortBy(func)
-   
-     ```python
-     sc.parallelize([('a',1),('b',1),('c',1),('b',1),('b',1),('a',1)]).reduceByKey(lambda a,b:a+b).sortBy(lambda x:x[1],False).collect() #统计词频按照元素数量进行降序
-     ```
-    ```
-    - join
-      内连接（类似MySQL的inner join）
-      ```python
-      rdd1 = sc.parallelize([('spark',1),('spark',2),('hadoop',3),('hadoop',5)])
-      rdd2 = sc.parallelize([('spark','3')])
-      rdd1.join(rdd2).collect() #[('spark', (1, '3')), ('spark', (2, '3'))]
-    ```
-   
-    - keys()
-   
-      ```python
-      sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).keys().collect() #['a', 'b', 'c', 'b', 'a']
-      ```
-   
-    - values
-   
-      ```python
-      sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).values().collect() #['a', 'b', 'c', 'b', 'a']
-      ```
-   
-      
+   ```python
+   sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).sortByKey().collect() #按照key升序
+   sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).reduceByKey(lambda a,b:a+b).sortByKey(False).collect() #统计词频按照key进行降序
+   ```
 
+- sortBy(func)
 
- - Action(行动操作)
+  ```python
+  sc.parallelize([('a',1),('b',1),('c',1),('b',1),('b',1),('a',1)]).reduceByKey(lambda a,b:a+b).sortBy(lambda x:x[1],False).collect() #统计词频按照元素数量进行降序
+  ```
+
+- join
+
+   ```python
+   #   内连接（类似MySQL的inner join）
+   rdd1 = sc.parallelize([('spark',1),('spark',2),('hadoop',3),('hadoop',5)])
+   rdd2 = sc.parallelize([('spark','3')])
+   rdd1.join(rdd2).collect() #[('spark', (1, '3')), ('spark', (2,'3'))]
+   ```
+   
+ - keys()
+
+   ```python
+sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).keys().collect() #['a', 'b', 'c', 'b', 'a']
+   ```
+
+ - values
+
+   ```python
+sc.parallelize([('a',1),('b',1),('c',1),('b',1),('a',1)]).values().collect() #['a', 'b', 'c', 'b', 'a']
+   ```
+
+#### Action(行动操作)
 
   惰性机制(转换过程只记录转换的轨迹，行动操作才真正计算)
 
-  - count() #返回数据集中的元素个数
+```python
+count() #返回数据集中的元素个数
+collect() #以数组形式返回数据集所有元素
+first() #返回数据集第一个元素
+take(n)#以数组形式返回数据集前n个元素
+reduce(func)#通过函数func（输入两个参数返回一个值）聚合数据集中元素
+forearch(func)#将数据集的每个元素传递到函数func中运行
+```
 
-  - collect() #以数组形式返回数据集所有元素
+```python
+rdd = sc.parallelize([1,2,3,4,5])
+rdd.count() #5
+rdd.first() #1
+rdd.take(3)#[1,2,3]
+rdd.reduce(lambda x,y:x+y) #15
+rdd.collect()#[1,2,3,4,5]
+rdd.foreach(lambda x:print(x)) #并未显示？
+lines = sc.textFile("/tmp/student.txt") #生成RDD对象lines,自动按换行符拆分成RDD列表对象
+lines.collect() #['C01,N0101,82', 'C01,N0102,59', 'C01,N0103,65', 'C02,N0201,81', 'C02,N0202,82', 'C02,N0203,79', 'C03,N0301,56', 'C03,N0302,92', 'C03,N0306,72']
+lineLeng = lines.map(lambda x:len(x))
+lineLeng.collect()#[12, 12, 12, 12, 12, 12, 12, 12, 12]
+totalLeng = lineLeng.reduce(lambda a,b:a+b)
+totalLeng #108
+```
 
-  - first() #返回数据集第一个元素
-
-  - take(n)#以数组形式返回数据集前n个元素
-
-  - reduce(func)#通过函数func（输入两个参数返回一个值）聚合数据集中元素
-
-  - forearch(func)#将数据集的每个元素传递到函数func中运行
-
-    ```python
-    rdd = sc.parallelize([1,2,3,4,5])
-    rdd.count() #5
-    rdd.first() #1
-    rdd.take(3)#[1,2,3]
-    rdd.reduce(lambda x,y:x+y) #15
-    rdd.collect()#[1,2,3,4,5]
-    rdd.foreach(lambda x:print(x)) #并未显示？
-    lines = sc.textFile("/tmp/student.txt") #生成RDD对象lines,自动按换行符拆分成RDD列表对象
-    lines.collect() #['C01,N0101,82', 'C01,N0102,59', 'C01,N0103,65', 'C02,N0201,81', 'C02,N0202,82', 'C02,N0203,79', 'C03,N0301,56', 'C03,N0302,92', 'C03,N0306,72']
-    lineLeng = lines.map(lambda x:len(x))
-    lineLeng.collect()#[12, 12, 12, 12, 12, 12, 12, 12, 12]
-    totalLeng = lineLeng.reduce(lambda a,b:a+b)
-    totalLeng #108
-    ```
-
-### RDD持久化
+### 4.4 RDD持久化
 
 通过缓存机制避免重复计算（持久化后的RDD会保留在计算节点的内存中被后面的行动操作重复使用）
 
-- persist()
+persist()
 
-  标记RDD为持久化，遇到第一个行动操作触发计算
+标记RDD为持久化，遇到第一个行动操作触发计算
 
-  ```python
-  li = ['a','b','c']
-  rdd = sc.parallelize(li)
-  rdd.cache()#等价于rdd.persist(MEMORY_ONLY),只缓存在内存中，内存不足LRU替换，但并未真正缓存，要等到行动操作
-  rdd.count()#第一次行动，把rdd放到缓存中
-  '/'.join(rdd.collect()) #第二次行动，重复使用缓存的rdd
-  rdd.unpersist() #释放内存缓存的RDD
-  ```
-### RDD分区
+```python
+li = ['a','b','c']
+rdd = sc.parallelize(li)
+rdd.cache()#等价于rdd.persist(MEMORY_ONLY),只缓存在内存中，内存不足LRU替换，但并未真正缓存，要等到行动操作
+rdd.count()#第一次行动，把rdd放到缓存中
+'/'.join(rdd.collect()) #第二次行动，重复使用缓存的rdd
+rdd.unpersist() #释放内存缓存的RDD
+```
+
+### 4.5 RDD分区
 
 作用：
 
@@ -390,12 +383,6 @@ rdd.mapValues(lambda x:(x,1)).reduceByKey(lambda a,b:(a[0]+b[0],a[1]+b[1])).mapV
 
 按文件数字排序，并增加递增索引列
 
-```shell
-2
-5
-1
-```
-
 ```python
 from pyspark import SparkConf,SparkContext
 index = 0
@@ -438,7 +425,7 @@ rdd3 = sc.textFile("file:///root/tmp/file/sort/file3.txt").map(lambda x:((int(x.
 rdd3.map(lambda x:(SecondSortKey(x[0]),x[1])).sortByKey(False).map(lambda x:x[1]).collect()
 ```
 
-### HBASE
+### 4.6 HBASE
 
 hbase架构在hdfs上，是分布式数据库
 
@@ -471,7 +458,7 @@ put 'student','2','info:gender','M' #插入单元格，student表，行键，列
 put 'student','2','info:age','24' #插入单元格，student表，行键，列族：列限定符，单元格值
 ```
 
-## Spark SQL
+## 五、Spark SQL
 
 DataFrame
 
@@ -489,7 +476,7 @@ DataFrame
   spark = SparkSession.builder.config(conf=SparkConf()).getOrCreate() #指挥官，交互式环境自动创建sc和spark
   ```
 
-- 创建DataFrame
+### 5.1 创建DataFrame
 
   ```python
   spark.read.text('people.txt') #读取文本文件创建，本地file:///，hdfs://
@@ -500,7 +487,7 @@ DataFrame
   等价于spark.read.format('parquet').load('people.parquet')
   ```
 
-- 保存DataFrame
+### 5.2 保存DataFrame
 
   ```python
   df.write.txt('people.txt') #保存为text目录
@@ -511,7 +498,7 @@ DataFrame
   等价于df.write.format('parquet').save('people.parquet')
   ```
 
-- 操作
+### 5.3 基本操作
 
   - show()
 
@@ -609,9 +596,9 @@ DataFrame
   ```
 
 
-## Spark 流计算
+## 六、Spark 流计算
 
-#### Spark Streaming
+Spark Streaming
 
 秒级微批处理
 
@@ -620,10 +607,8 @@ DataFrame
 - Spark SQL 数据抽象 DataFrame(管家：SparkSession)
 
 - Streaming 数据抽象 DStream(管家：StreamingContext)（离散化discrete stream）
-
-### DStream
-
-- 创建StreamingContext
+### 6.1 DStream创建
+StreamingContext
 
   - pyspark环境
 
@@ -644,36 +629,36 @@ DataFrame
   ssc = StreamingContext(sc,1)
   ```
 
-- 文件流
+#### 文件流
 
-  /root/tmp/sparkPython/FileStreaming.py
+/root/tmp/sparkPython/FileStreaming.py
 
-  ```python
-  from pyspark import SparkContext,SparkConf
-  from pyspark.streaming import StreamingContext
-  conf = SparkConf()
-  conf.setAppName('TestDStream')
-  conf.setMaster('local[*]')
-  sc = SparkContext(conf = conf)
-  ssc = StreamingContext(sc,10) #每隔10s启动一次流计算
-  lines = ssc.textFileStream('file:///root/tmp/logfile')
-  words = lines.flatMap(lambda x:x.split(','))
-  wordsCounts = words.map(lambda x:(x,1)).reduceByKey(lambda a,b:a+b)
-  wordsCounts.pprint()
-  ssc.start()
-  ssc.awaitTermination()
-  ```
+```python
+from pyspark import SparkContext,SparkConf
+from pyspark.streaming import StreamingContext
+conf = SparkConf()
+conf.setAppName('TestDStream')
+conf.setMaster('local[*]')
+sc = SparkContext(conf = conf)
+ssc = StreamingContext(sc,10) #每隔10s启动一次流计算
+lines = ssc.textFileStream('file:///root/tmp/logfile')
+words = lines.flatMap(lambda x:x.split(','))
+wordsCounts = words.map(lambda x:(x,1)).reduceByKey(lambda a,b:a+b)
+wordsCounts.pprint()
+ssc.start()
+ssc.awaitTermination()
+```
 
-  运行
+运行
 
-  ```python
-  cd /root/bigdata/spark/bin
-  spark-submit /root/tmp/FileStreaming.py
-  ```
-  
-- 套接字流(Socket)
-  
-  /root/tmp/sparkPython/socketCount.py
+```python
+cd /root/bigdata/spark/bin
+spark-submit /root/tmp/FileStreaming.py
+```
+
+#### 套接字流(Socket)
+
+/root/tmp/sparkPython/socketCount.py
 
 ```python
   from pyspark import SparkContext,SparkConf
@@ -723,290 +708,294 @@ DataFrame
       conn.close()
       print('conn is close')
   ```
-- RDD队列流
+#### RDD队列流
+
+/root/tmp/sparkPython/queneCount.py
+
+```python
+from pyspark import SparkContext
+from pyspark.streaming import StreamingContext
+import time
+if __name__=='__main__':  
+    sc = SparkContext(appName = 'queneStream')
+    ssc = StreamingContext(sc,10) #每隔10s不断计算
+    rddQ = [] #创建队列
+    for i in range(5):
+        rddQ += [ssc.sparkContext.parallelize([j for j in range(1,100)],2)] #分2个区
+        time.sleep(1)
+	#创建RDD队列流
+    inputStream = ssc.queueStream(rddQ)
+    counts = inputStream.map(lambda x:(x%10,1)).reduceByKey(lambda a,b:a+b) #余数词频统计
+    counts.pprint()
+    ssc.start()
+    ssc.stop(stopSparkContext=True,stopGraceFully=True)   
+```
+
+#### Kafka数据源
+
+- 高吞吐量的分布式发布订阅消息系统
+
+- 同时满足在线实时处理和批量离线处理
+
+- 数据交换枢纽
+
+- 组件
+
+  - Broker 多台服务器
+
+  - Topic 按不同主题分开存储
+
+  - Partition 每隔主题包含一个或多个Partition 
+
+    ![image-20210322200351132](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210322200351132.png)
+
+  - Producer 生产者 发布消息
+
+  - Consumer 消费者 读取消息的客户端
+
+    - Consumer Group 每个consumer 只属于某个Consumer Group
+
+- 启动KafKa
+
+  ```shell
+  cd /root/bigdata/kafka
+  ./bin/zookeeper-server-start.sh config/zookeeper.properties #启动zookeeper终端
+  ```
+
+  打开第二个终端
+
+  ```shell
+  cd /root/bigdata/kafka
+  bin/kafka-server-start.sh config/server.properties#启动kafka终端
+  ```
+
+  测试
+
+  ```python
+  ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --replication-factor 1 --partitions 1 --topic wordtest #1个副本1个分区
+  ./bin/kafka-topics.sh --list --zookeeper localhost:2181 #展示
+  ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wordtest #用生产者Producer生产数据
+  >hello hadoop
+  >hello spark
+  #打开新终端
+  cd /root/bigdata/kafka
+  ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic wordtest --from-beginning #用Consumer查看
+  ```
+
+  编写kafka源流计算
   
-  /root/tmp/sparkPython/queneCount.py
+  /root/tmp/sparkPython/kafkaCount.py
   
   ```python
+  import sys
   from pyspark import SparkContext
   from pyspark.streaming import StreamingContext
-  import time
-  if __name__=='__main__':  
-      sc = SparkContext(appName = 'queneStream')
-      ssc = StreamingContext(sc,10) #每隔10s不断计算
-      rddQ = [] #创建队列
-      for i in range(5):
-          rddQ += [ssc.sparkContext.parallelize([j for j in range(1,100)],2)] #分2个区
-          time.sleep(1)
-  	#创建RDD队列流
-      inputStream = ssc.queueStream(rddQ)
-      counts = inputStream.map(lambda x:(x%10,1)).reduceByKey(lambda a,b:a+b) #余数词频统计
+  from pyspark.streaming.kafka import KafkaUtils
+  if __name__=='__main__':
+      if len(sys.argv)!=3:
+          print('<zk><topic>',file=sys.stderr)
+          exit(-1)
+      sc = SparkContext(appName='KafkaWord')
+      ssc = StreamingContext(sc,1)
+      zkQuorum,topic = sys.argv[1:]
+      kvs = KafkaUtils.createStream(ssc,zkQuorum,'spark-stream-consumer',{topic:1}) #构建输入源，spark-stream-consumer：spark-stream组,{topic:1}:主题:1个分区
+      counts = kvs.map(lambda x:x[1]).flatMap(lambda x:x.split(' ')).map(lambda x:(word,1)).reduceByKey(lambda a,b:a+b)
       counts.pprint()
       ssc.start()
-      ssc.stop(stopSparkContext=True,stopGraceFully=True)   
+      ssc.awaitTermination()
   ```
   
-- Kafka数据源
+  新建shell
+  
+  ```shell
+   /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/kafkaCount.py localhost:2181 WordCount
+  ```
+  
+### 6.2 DStream转换操作
 
-  - 高吞吐量的分布式发布订阅消息系统
+#### 无状态转换操作
 
-  - 同时满足在线实时处理和批量离线处理
+只针对当前一个批次进行统计，历史数据不记录
 
-  - 数据交换枢纽
+如套接字流介绍的词频统计就采用的无状态转换，每次统计，都只统计当前批次到达的单词的词频，和之前批次无关，不会进行累计
 
-  - 组件
+```python
+ - map(func)
+ - flatMap(func)
+ - filter(func)
+ - repartition(numPartitions)   #分区改变并行程度
+ - reduce(func)   #聚合
+ - count()  # 统计源DStream中RDD元素数量
+- union(otherStream) #合并DStream
+  - reduceByKey(func,[numTasks]) #key相同，进行聚合运算，返回新(K,V)组成的DStream
+- join(otherStream,[numTasks]) # 拼接相同key的v,返回(k,(V,W))键值对
+```
 
-    - Broker 多台服务器
+#### 有状态转换操作
 
-    - Topic 按不同主题分开存储
+- 滑动窗口转换操作(reduceByKeyAndWindow())
 
-    - Partition 每隔主题包含一个或多个Partition 
+  ```python
+  reduceByKeyAndWindow(func,windowLength,slideInterval,[numTasks]) #应用到(k,v)键值对组成的DStream上，通过numTasks参数的设置来指定不同的任务数
+  reduceByKeyAndWindow(func,invFunc,windowLength,slideInterval,[numTasks]) #更加高效，增量计算，优化的是窗口内的计算量，减少计算量，对进入窗口内的新数据进行reduce操作，并对离开窗口的老数据进行“逆向reduce”操作。
+  ```
 
-      ![image-20210322200351132](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210322200351132.png)
+  ```python
+  #/root/tmp/sparkPython/reduceByKeyAndWindow.py
+  import sys
+  from pyspark import SparkContext
+  from pyspark.streaming import StreamingContext
+  if __name__=='__main__':
+      if len(sys.argv)!=3:
+          print('<zk><topic>',file=sys.stderr)
+          exit(-1)
+      sc = SparkContext(appName='reduceByKeyAndWindow')
+      ssc = StreamingContext(sc,1)
+      ssc.checkpoint('file:///root/tmp/sparkPython/checkpoint') #防止数据丢失
+      lines = ssc.socketTextStream(sys.argv[1],int(sys.argv[2]))
+      counts = lines.flatMap(lambda x:x.split(' ')).map(lambda x:(x,1)).reduceByKeyAndWindow(lambda a,b:a+b,lambda a,b:a-b,30,10) #func,inversefunc,滑动窗口大小30s，滑动窗口时间间隔10s
+      counts.pprint()
+      ssc.start()
+      ssc.awaitTermination() 
+  ```
 
-    - Producer 生产者 发布消息
+  测试
 
-    - Consumer 消费者 读取消息的客户端
+  ```shell
+  nc -lk 9999 #启动服务端socket,数据源终端
+  #再启动shell，流计算终端
+  /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/reduceByKeyAndWindow.py localhost 9999
+  ```
 
-      - Consumer Group 每个consumer 只属于某个Consumer Group
+- updateStateByKey操作
 
-  - 启动KafKa
+  跨批次之间维护状态
 
-    ```shell
-    cd /root/bigdata/kafka
-    ./bin/zookeeper-server-start.sh config/zookeeper.properties #启动zookeeper终端
-    ```
+  ```python
+  #/root/tmp/sparkPython/updateStateByKey.py
+  import sys
+  from pyspark import SparkContext
+  from pyspark.streaming import StreamingContext
+  if __name__=='__main__':
+      if len(sys.argv)!=3:
+          print('<zk><topic>',file=sys.stderr)
+          exit(-1)
+      sc = SparkContext(appName='StateWordCount')
+      ssc = StreamingContext(sc,1)
+      ssc.checkpoint('file:///root/tmp/sparkPython/stateful') #防止数据丢失
+      initRDD = sc.parallelize([(u'hello',1),(u'world',1)])
+      def updateFunc(new_values,last_sum):
+          return sum(new_values)+(last_sum or 0)
+      lines = ssc.socketTextStream(sys.argv[1],int(sys.argv[2]))
+      counts = lines.flatMap(lambda x:x.split(' ')).map(lambda x:(x,1)).updateStateByKey(updateFunc,initialRDD=initRDD) 
+      counts.pprint()
+      ssc.start()
+      ssc.awaitTermination() 
+  ```
 
-    打开第二个终端
+  测试
 
-    ```shell
-    cd /root/bigdata/kafka
-    bin/kafka-server-start.sh config/server.properties#启动kafka终端
-    ```
+  ```python
+  nc -lk 9999 #启动服务端socket,数据源终端
+  #再启动shell，流计算终端
+  /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/updateStateByKey.py localhost 9999
+  ```
 
-    测试
-
-    ```python
-    ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --replication-factor 1 --partitions 1 --topic wordtest #1个副本1个分区
-    ./bin/kafka-topics.sh --list --zookeeper localhost:2181 #展示
-    ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wordtest #用生产者Producer生产数据
-    >hello hadoop
-    >hello spark
-    #打开新终端
-    cd /root/bigdata/kafka
-    ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic wordtest --from-beginning #用Consumer查看
-    ```
-
-    编写kafka源流计算
+  - DStream输出转化
+  
+    - saveAsTextFiles（DStream输出到文本文件）
     
-    /root/tmp/sparkPython/kafkaCount.py
+      ```python
+      #/root/tmp/sparkPython/fileOut.py
+      import sys
+      from pyspark import SparkContext
+      from pyspark.streaming import StreamingContext
+      if __name__=='__main__':
+          if len(sys.argv)!=3:
+              print('<zk><topic>',file=sys.stderr)
+              exit(-1)
+          sc = SparkContext(appName='StateWordCountFile')
+          ssc = StreamingContext(sc,1)
+          ssc.checkpoint('file:///root/tmp/sparkPython/statefulFile/') #防止数据丢失
+          initRDD = sc.parallelize([(u'hello',1),(u'world',1)])
+          def updateFunc(new_values,last_sum):
+              return sum(new_values)+(last_sum or 0)
+          lines = ssc.socketTextStream(sys.argv[1],int(sys.argv[2]))
+          counts = lines.flatMap(lambda x:x.split(' ')).map(lambda x:(x,1)).updateStateByKey(updateFunc,initialRDD=initRDD) 
+          counts.saveAsTextFiles('file:///root/tmp/sparkPython/statefulFile/output') #保存到文件
+          counts.pprint()
+          ssc.start()
+          ssc.awaitTermination() 
+      ```
     
-    ```python
-    import sys
-    from pyspark import SparkContext
-    from pyspark.streaming import StreamingContext
-    from pyspark.streaming.kafka import KafkaUtils
-    if __name__=='__main__':
-        if len(sys.argv)!=3:
-            print('<zk><topic>',file=sys.stderr)
-            exit(-1)
-        sc = SparkContext(appName='KafkaWord')
-        ssc = StreamingContext(sc,1)
-        zkQuorum,topic = sys.argv[1:]
-        kvs = KafkaUtils.createStream(ssc,zkQuorum,'spark-stream-consumer',{topic:1}) #构建输入源，spark-stream-consumer：spark-stream组,{topic:1}:主题:1个分区
-        counts = kvs.map(lambda x:x[1]).flatMap(lambda x:x.split(' ')).map(lambda x:(word,1)).reduceByKey(lambda a,b:a+b)
-        counts.pprint()
-        ssc.start()
-        ssc.awaitTermination()
-    ```
+    - DStream写入到MySQL
     
-    新建shell
+      ```python
+      # /root/tmp/sparkPython/networkWordStatulDB.py
+      #source activate py365
+      import sys
+      import pymysql
+      from pyspark import SparkContext
+      from pyspark.streaming import StreamingContext
+      
+      
+      def dbfunc(records):
+          db = pymysql.connect('192.168.1.192', 'root', 'Bibenet123456', 'dataprocess')
+          cursor = db.cursor()
+      
+          def doinsert(p):
+              sql = '''insert into wordcount(word,count) values ('%s','%s')''' % (str(p[0]), str(p[1]))
+              try:
+                  cursor.execute(sql)
+                  db.commit()
+              except:
+                  db.rollback()
+      
+          for item in records:
+              doinsert(item)
+      
+      
+      def func(rdd):
+          repartitionedRDD = rdd.repartition(3)  # 减少分区，减少并发连接数据库
+          repartitionedRDD.foreachPartition(dbfunc)
+      
+      
+      if __name__ == '__main__':
+          if len(sys.argv) != 3:
+              print('<zk><topic>', file=sys.stderr)
+              exit(-1)
+          sc = SparkContext(appName='StateWordCountDB')
+          ssc = StreamingContext(sc, 1)
+          ssc.checkpoint('file:///root/tmp/sparkPython/statefulDB/')  # 防止数据丢失
+          initRDD = sc.parallelize([(u'hello', 1), (u'world', 1)])
+      
+      
+          def updateFunc(new_values, last_sum):
+              return sum(new_values) + (last_sum or 0)
+      
+      
+          lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
+          counts = lines.flatMap(lambda x: x.split(' ')).map(lambda x: (x, 1)).updateStateByKey(updateFunc,
+                                                                                                initialRDD=initRDD)
+          counts.foreachRDD(func)  # 保存到数据库
+          counts.pprint()
+          ssc.start()
+          ssc.awaitTermination()
+      ```
     
-    ```shell
-     /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/kafkaCount.py localhost:2181 WordCount
-    ```
+      测试
     
-  - DStream转换操作
-
-    - 无状态转换操作
-
-       只针对当前一个批次进行统计，历史数据不记录
-
-       如套接字流介绍的词频统计就采用的无状态转换，每次统计，都只统计当前批次到达的单词的词频，和之前批次无关，不会进行累计
-
-       ```python
-        - map(func)
-        - flatMap(func)
-        - filter(func)
-        - repartition(numPartitions)   #分区改变并行程度
-        - reduce(func)   #聚合
-        - count()  # 统计源DStream中RDD元素数量
-      - union(otherStream) #合并DStream
-        - reduceByKey(func,[numTasks]) #key相同，进行聚合运算，返回新(K,V)组成的DStream
-      - join(otherStream,[numTasks]) # 拼接相同key的v,返回(k,(V,W))键值对
+      ```python
+      netstat -anp |grep 9999
+      nc -lk 9999 #启动服务端socket,数据源终端
+      #再启动shell，流计算终端
+      /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/networkWordStatulDB.py localhost 9999
       ```
 
-    - 有状态转换操作
 
-       - 滑动窗口转换操作(reduceByKeyAndWindow())
+## 七、结构化数据流 
 
-         ```python
-         reduceByKeyAndWindow(func,windowLength,slideInterval,[numTasks]) #应用到(k,v)键值对组成的DStream上，通过numTasks参数的设置来指定不同的任务数
-         reduceByKeyAndWindow(func,invFunc,windowLength,slideInterval,[numTasks]) #更加高效，增量计算，优化的是窗口内的计算量，减少计算量，对进入窗口内的新数据进行reduce操作，并对离开窗口的老数据进行“逆向reduce”操作。
-         ```
-
-         ```python
-         #/root/tmp/sparkPython/reduceByKeyAndWindow.py
-         import sys
-         from pyspark import SparkContext
-         from pyspark.streaming import StreamingContext
-         if __name__=='__main__':
-             if len(sys.argv)!=3:
-                 print('<zk><topic>',file=sys.stderr)
-                 exit(-1)
-             sc = SparkContext(appName='reduceByKeyAndWindow')
-             ssc = StreamingContext(sc,1)
-             ssc.checkpoint('file:///root/tmp/sparkPython/checkpoint') #防止数据丢失
-             lines = ssc.socketTextStream(sys.argv[1],int(sys.argv[2]))
-             counts = lines.flatMap(lambda x:x.split(' ')).map(lambda x:(x,1)).reduceByKeyAndWindow(lambda a,b:a+b,lambda a,b:a-b,30,10) #func,inversefunc,滑动窗口大小30s，滑动窗口时间间隔10s
-             counts.pprint()
-             ssc.start()
-             ssc.awaitTermination() 
-         ```
-
-         测试
-
-         ```shell
-         nc -lk 9999 #启动服务端socket,数据源终端
-         #再启动shell，流计算终端
-         /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/reduceByKeyAndWindow.py localhost 9999
-         ```
-
-       - updateStateByKey操作
-
-         跨批次之间维护状态
-
-         ```python
-         #/root/tmp/sparkPython/updateStateByKey.py
-         import sys
-         from pyspark import SparkContext
-         from pyspark.streaming import StreamingContext
-         if __name__=='__main__':
-             if len(sys.argv)!=3:
-                 print('<zk><topic>',file=sys.stderr)
-                 exit(-1)
-             sc = SparkContext(appName='StateWordCount')
-             ssc = StreamingContext(sc,1)
-             ssc.checkpoint('file:///root/tmp/sparkPython/stateful') #防止数据丢失
-             initRDD = sc.parallelize([(u'hello',1),(u'world',1)])
-             def updateFunc(new_values,last_sum):
-                 return sum(new_values)+(last_sum or 0)
-             lines = ssc.socketTextStream(sys.argv[1],int(sys.argv[2]))
-             counts = lines.flatMap(lambda x:x.split(' ')).map(lambda x:(x,1)).updateStateByKey(updateFunc,initialRDD=initRDD) 
-             counts.pprint()
-             ssc.start()
-             ssc.awaitTermination() 
-         ```
-       
-         测试
-       
-         ```python
-         nc -lk 9999 #启动服务端socket,数据源终端
-         #再启动shell，流计算终端
-         /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/updateStateByKey.py localhost 9999
-         ```
-
-    - DStream输出转化
-
-      - saveAsTextFiles（DStream输出到文本文件）
-
-        ```python
-        #/root/tmp/sparkPython/fileOut.py
-        import sys
-        from pyspark import SparkContext
-        from pyspark.streaming import StreamingContext
-        if __name__=='__main__':
-            if len(sys.argv)!=3:
-                print('<zk><topic>',file=sys.stderr)
-                exit(-1)
-            sc = SparkContext(appName='StateWordCountFile')
-            ssc = StreamingContext(sc,1)
-            ssc.checkpoint('file:///root/tmp/sparkPython/statefulFile/') #防止数据丢失
-            initRDD = sc.parallelize([(u'hello',1),(u'world',1)])
-            def updateFunc(new_values,last_sum):
-                return sum(new_values)+(last_sum or 0)
-            lines = ssc.socketTextStream(sys.argv[1],int(sys.argv[2]))
-            counts = lines.flatMap(lambda x:x.split(' ')).map(lambda x:(x,1)).updateStateByKey(updateFunc,initialRDD=initRDD) 
-            counts.saveAsTextFiles('file:///root/tmp/sparkPython/statefulFile/output') #保存到文件
-            counts.pprint()
-            ssc.start()
-            ssc.awaitTermination() 
-        ```
-
-      - DStream写入到MySQL
-
-        ```python
-        # /root/tmp/sparkPython/networkWordStatulDB.py
-        #source activate py365
-        import sys
-        import pymysql
-        from pyspark import SparkContext
-        from pyspark.streaming import StreamingContext
-        
-        
-        def dbfunc(records):
-            db = pymysql.connect('192.168.1.192', 'root', 'Bibenet123456', 'dataprocess')
-            cursor = db.cursor()
-        
-            def doinsert(p):
-                sql = '''insert into wordcount(word,count) values ('%s','%s')''' % (str(p[0]), str(p[1]))
-                try:
-                    cursor.execute(sql)
-                    db.commit()
-                except:
-                    db.rollback()
-        
-            for item in records:
-                doinsert(item)
-        
-        
-        def func(rdd):
-            repartitionedRDD = rdd.repartition(3)  # 减少分区，减少并发连接数据库
-            repartitionedRDD.foreachPartition(dbfunc)
-        
-        
-        if __name__ == '__main__':
-            if len(sys.argv) != 3:
-                print('<zk><topic>', file=sys.stderr)
-                exit(-1)
-            sc = SparkContext(appName='StateWordCountDB')
-            ssc = StreamingContext(sc, 1)
-            ssc.checkpoint('file:///root/tmp/sparkPython/statefulDB/')  # 防止数据丢失
-            initRDD = sc.parallelize([(u'hello', 1), (u'world', 1)])
-        
-        
-            def updateFunc(new_values, last_sum):
-                return sum(new_values) + (last_sum or 0)
-        
-        
-            lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
-            counts = lines.flatMap(lambda x: x.split(' ')).map(lambda x: (x, 1)).updateStateByKey(updateFunc,
-                                                                                                  initialRDD=initRDD)
-            counts.foreachRDD(func)  # 保存到数据库
-            counts.pprint()
-            ssc.start()
-            ssc.awaitTermination()
-        ```
-
-        测试
-
-        ```python
-        netstat -anp |grep 9999
-        nc -lk 9999 #启动服务端socket,数据源终端
-        #再启动shell，流计算终端
-        /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/networkWordStatulDB.py localhost 9999
-        ```
-## 七、结构化数据流 Structured Streaming
+### 7.1 Structured Streaming
 
 思想：将实时数据流视为一张正在不断添加数据的表
 
@@ -1030,7 +1019,7 @@ DataFrame
 
   Spark Streaming 实现的是秒级响应
 
-编程案例：
+编程案例
 
 包含很多行英文语句的数据流源源不断到达，Structured Streaming程序对每行进行拆分统计词频
 
@@ -1058,108 +1047,104 @@ nc -lk 9999 #启动服务端socket,数据源终端
 /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/StructuredStreaming.py
 ```
 
+### 7.2 输入源
+
+#### File源
+
+支持csv/json/orc/parquet/text
+
+```python
+#/root/tmp/sparkPython/StructuredStreamingJSON.py
+#生成测试文件
+import os
+import shutil
+import random
+import time
+
+TEST_DATA_TEMP_DIR = '/root/tmp/file/'
+TEST_DATA_DIR = '/root/tmp/file/testdata/'
+ACTION_DEF = ['login', 'logout', 'purchase']
+DISTRICT_DEF = ['fujian', 'beijing', 'shanghai', 'guangzhou']
+JSON_LINE_PATTERN = '{{"eventTime":{},"action":"{}","district":"{}"}}\n'
 
 
-输入源
+# 测试环境搭建，创建文件夹
+def test_setUp():
+    if os.path.exists(TEST_DATA_DIR):
+        shutil.rmtree(TEST_DATA_DIR, ignore_errors=True)
+    os.mkdir(TEST_DATA_DIR)
 
-- File源
 
-  - csv/json/orc/parquet/text
+# 测试环境清空
+def test_tearDown():
+    if os.path.exists(TEST_DATA_DIR):
+        shutil.rmtree(TEST_DATA_DIR, ignore_errors=True)
 
-  - 实例
 
-    ```python
-    #/root/tmp/sparkPython/StructuredStreamingJSON.py
-    #生成测试文件
-    import os
-    import shutil
-    import random
-    import time
-    
-    TEST_DATA_TEMP_DIR = '/root/tmp/file/'
-    TEST_DATA_DIR = '/root/tmp/file/testdata/'
-    ACTION_DEF = ['login', 'logout', 'purchase']
-    DISTRICT_DEF = ['fujian', 'beijing', 'shanghai', 'guangzhou']
-    JSON_LINE_PATTERN = '{{"eventTime":{},"action":"{}","district":"{}"}}\n'
-    
-    
-    # 测试环境搭建，创建文件夹
-    def test_setUp():
-        if os.path.exists(TEST_DATA_DIR):
-            shutil.rmtree(TEST_DATA_DIR, ignore_errors=True)
-        os.mkdir(TEST_DATA_DIR)
-    
-    
-    # 测试环境清空
-    def test_tearDown():
-        if os.path.exists(TEST_DATA_DIR):
-            shutil.rmtree(TEST_DATA_DIR, ignore_errors=True)
-    
-    
-    # 生成测试文件
-    def write_and_move(filename, data):
-        with open(TEST_DATA_TEMP_DIR + filename, 'wt', encoding='utf-8') as f:
-            f.write(data)
-        shutil.move(TEST_DATA_TEMP_DIR + filename, TEST_DATA_DIR + filename)
-    
-    
-    if __name__ == '__main__':
-        test_setUp()
-        for i in range(1000):
-            filename = 'e_mall_{}.json'.format(i)
-            content = ''
-            rndcount = list(range(100))
-            random.shuffle(rndcount)
-            for _ in rndcount:
-                content += JSON_LINE_PATTERN.format(str(int(time.time())), random.choice(ACTION_DEF),
-                                                    random.choice(DISTRICT_DEF))
-            write_and_move(filename,content)
-            time.sleep(1)
-        test_tearDown()
-    
-    ```
+# 生成测试文件
+def write_and_move(filename, data):
+    with open(TEST_DATA_TEMP_DIR + filename, 'wt', encoding='utf-8') as f:
+        f.write(data)
+    shutil.move(TEST_DATA_TEMP_DIR + filename, TEST_DATA_DIR + filename)
 
-    ```python
-    #/root/tmp/sparkPython/spark__ss__filesource.py
-    #创建程序第数据进行统计
-    
-    import os
-    import shutil
-    from pprint import pprint
-    from pyspark.sql import SparkSession
-    from pyspark.sql.functions import window,asc
-    from pyspark.sql.types import StructType,StructField
-    from pyspark.sql.types import TimestampType,StringType
-    #定义json文件的路径
-    TEST_DATA_DIR_SPARK='file:///root/tmp/file/testdata/'
-    
-    if __name__ == '__main__':
-        schema = StructType([StructField('eventTime',TimestampType(),True),
-                             StructField('action',StringType(),True),
-                             StructField('district',StringType(),True)])
-        spark = SparkSession.builder.appName('structuredFileCount').getOrCreate()
-        spark.sparkContext.setLogLevel('WARN')
-        lines = spark.readStream.format('json').schema(schema).option('maxFilesPerTrigger', 100).load(TEST_DATA_DIR_SPARK)  # 每读100个文件触发一次
-        windowDuration = '1 minutes'
-    
-        windowedCounts = lines.filter("action='purchase'").groupBy('district',window('eventTime','1 minutes')).count().sort(asc('window'))
-        query = windowedCounts.writeStream.outputMode('complete').format('console').option('truncate','false').trigger(
-            processingTime='10 seconds').start()  # 执行流计算，显示到控制台，每隔10秒触发一次流计算
-    
-        query.awaitTermination()
-    ```
 
-    测试
+if __name__ == '__main__':
+    test_setUp()
+    for i in range(1000):
+        filename = 'e_mall_{}.json'.format(i)
+        content = ''
+        rndcount = list(range(100))
+        random.shuffle(rndcount)
+        for _ in rndcount:
+            content += JSON_LINE_PATTERN.format(str(int(time.time())), random.choice(ACTION_DEF),
+                                                random.choice(DISTRICT_DEF))
+        write_and_move(filename,content)
+        time.sleep(1)
+    test_tearDown()
 
-    ```shell
-    #新建终端
-    source activate py365
-    python /root/tmp/sparkPython/StructuredStreamingJSON.py
-    #再新建终端
-    /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/spark__ss__filesource.py
-    ```
+```
 
-- Kafka源
+```python
+#/root/tmp/sparkPython/spark__ss__filesource.py
+#创建程序第数据进行统计
+
+import os
+import shutil
+from pprint import pprint
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import window,asc
+from pyspark.sql.types import StructType,StructField
+from pyspark.sql.types import TimestampType,StringType
+#定义json文件的路径
+TEST_DATA_DIR_SPARK='file:///root/tmp/file/testdata/'
+
+if __name__ == '__main__':
+    schema = StructType([StructField('eventTime',TimestampType(),True),
+                         StructField('action',StringType(),True),
+                         StructField('district',StringType(),True)])
+    spark = SparkSession.builder.appName('structuredFileCount').getOrCreate()
+    spark.sparkContext.setLogLevel('WARN')
+    lines = spark.readStream.format('json').schema(schema).option('maxFilesPerTrigger', 100).load(TEST_DATA_DIR_SPARK)  # 每读100个文件触发一次
+    windowDuration = '1 minutes'
+
+    windowedCounts = lines.filter("action='purchase'").groupBy('district',window('eventTime','1 minutes')).count().sort(asc('window'))
+    query = windowedCounts.writeStream.outputMode('complete').format('console').option('truncate','false').trigger(
+        processingTime='10 seconds').start()  # 执行流计算，显示到控制台，每隔10秒触发一次流计算
+
+    query.awaitTermination()
+```
+
+测试
+
+```shell
+#新建终端
+source activate py365
+python /root/tmp/sparkPython/StructuredStreamingJSON.py
+#再新建终端
+/root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/spark__ss__filesource.py
+```
+
+#### Kafka源
 
   生产者每0.1秒生成包含2个字母的单词，并写入'wordcount-topic'的主题内，
 
@@ -1232,11 +1217,11 @@ nc -lk 9999 #启动服务端socket,数据源终端
   /root/bigdata/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0 /root/tmp/sparkPython/kafka_structed_consumer.py
   ```
 
-- Socket源
+#### Socket源
 
   从一个本地或远程主机的某个端口服务上读取数据，编码为utf-8，使用内存保存，不能提供端到端的容错保障。一般用于测试或学习。
 
-- Rate源
+#### Rate源
 
   每秒生成特定个数的数据行，数据格式为时间戳和开始到当前发送消息的总个数，一般用于调试和性能基准测试。
 
@@ -1254,9 +1239,11 @@ nc -lk 9999 #启动服务端socket,数据源终端
       query.awaitTermination()
   ```
 
-- 输出操作
+### 7.3 输出操作
 
-  .writeSteam()方法将会返回DataStreamWriter接口，接口通过.start()启动流计算
+writeSteam()
+
+将会返回DataStreamWriter接口，接口通过.start()启动流计算
 
   ```python 
   format:#接收器类型
@@ -1270,43 +1257,42 @@ nc -lk 9999 #启动服务端socket,数据源终端
   queryName:#查询的名称
   trigger:#触发间隔，处理超时超过触发间隔，则处理完成后立即触发新查询
   ```
-# 八、Spark  MLlib
+## 八、Spark  MLlib
 
 基于大数据的机器学习
 
-![image-20210325161938309](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210325161938309.png)
+![](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210327093058868.png)
 
 spark.mllib 基于RDD
 
 saprk.ml 基于DataFrame
 
-- 流水线
+### 8.1 流水线
 
-  #判断文本是否包含spark单词
+```python
+#判断文本是否包含spark单词
+# /root/tmp/sparkPython/sparkLR.py
+from pyspark.sql import SparkSession
+from pyspark.ml import Pipeline
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.feature import HashingTF,Tokenizer
+if __name__ == '__main__':    
+    spark=SparkSession.builder.master('local').appName('WordCountML').getOrCreate()
+    training = spark.createDataFrame([(0,'a b c d spark',1.0),(1,'b d',0.0),(2,'spark f',1.0),(3,'hadd map',0.0)],['id','text','label'])
+    tokenizer = Tokenizer(inputCol='text',outputCol='words')
+    hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(),outputCol='features')
+    lr = LogisticRegression(maxIter=10,regParam=0.001)
+    pipeline = Pipeline(stages=[tokenizer,hashingTF,lr]) #构建流水线
+    model = pipeline.fit(training) #训练
+    test = spark.createDataFrame([(4,'spark'),(5,'b'),(6,'f spark '),(7,'apache hadoop')],['id','text'])
+    prediction = model.transform(test) #预测
+    select = prediction.select('id','text','probability','prediction')
+    for row in select.collect():
+        rid,text,probablity,predic =row
+        print(rid,text,probablity,predic)
+```
 
-  ```python
-  # /root/tmp/sparkPython/sparkLR.py
-  from pyspark.sql import SparkSession
-  from pyspark.ml import Pipeline
-  from pyspark.ml.classification import LogisticRegression
-  from pyspark.ml.feature import HashingTF,Tokenizer
-  if __name__ == '__main__':    
-      spark=SparkSession.builder.master('local').appName('WordCountML').getOrCreate()
-      training = spark.createDataFrame([(0,'a b c d spark',1.0),(1,'b d',0.0),(2,'spark f',1.0),(3,'hadd map',0.0)],['id','text','label'])
-      tokenizer = Tokenizer(inputCol='text',outputCol='words')
-      hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(),outputCol='features')
-      lr = LogisticRegression(maxIter=10,regParam=0.001)
-      pipeline = Pipeline(stages=[tokenizer,hashingTF,lr]) #构建流水线
-      model = pipeline.fit(training) #训练
-      test = spark.createDataFrame([(4,'spark'),(5,'b'),(6,'f spark '),(7,'apache hadoop')],['id','text'])
-      prediction = model.transform(test) #预测
-      select = prediction.select('id','text','probability','prediction')
-      for row in select.collect():
-          rid,text,probablity,predic =row
-          print(rid,text,probablity,predic)
-  ```
-
-  ```shell
+```shell
   #测试运行
   /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/sparkLR.py
   #结果
@@ -1314,81 +1300,76 @@ saprk.ml 基于DataFrame
   5 b [0.9644660707560256,0.03553392924397423] 0.0
   6 f spark  [0.00262976838891869,0.9973702316110812] 1.0
   7 apache hadoop [0.7847258548694875,0.21527414513051252] 0.0
-  ```
+```
 
-- 特征提取和转换
+### 8.2 特征提取和转换
 
-  ```python
-  StringIndexer #字符串转整数索引，索引按照标签频率降序从0开始编码
-  IndexToString #整数索引转字符串
-  OneHotEncoder #独热编码
-  VectorIndexer #向量转类别编码
-  
-  ```
+```python
+StringIndexer #字符串转整数索引，索引按照标签频率降序从0开始编码
+IndexToString #整数索引转字符串
+OneHotEncoder #独热编码
+VectorIndexer #向量转类别编码
+```
 
-  ```python
-  #StringIndexer 实例
-  from pyspark.ml.feature import StringIndexer 
-  from pyspark.sql import SparkSession
-  spark=SparkSession.builder.master('local').appName('WordCountIndex').getOrCreate()
-  df = spark.createDataFrame([(0,'a'),(1,'b'),(2,'c'),(3,'a'),(4,'a'),(5,'c')],['id','category'])
-  indexer = StringIndexer(inputCol='category',outputCol='cateIndex') #新增一列cateIndex
-  model = indexer.fit(df)
-  indexed = model.transform(df)
-  indexed.show()
-  #IndexToString实例
-  from pyspark.ml.feature import IndexToString
-  toString = IndexToString(inputCol='cateIndex',outputCol='originCate') #新增一列originCate
-  indexString = toString.transform(indexed)
-  indexString.select('id','originCate').show()
-  #VectorIndexer实例
-  from pyspark.ml.feature import VectorIndexer
-  from pyspark.ml.linalg import Vector,Vectors
-  df = spark.createDataFrame([(Vectors.dense(-1.0,1.0,1.0),),(Vectors.dense(-1.0,3.0,1.0),),(Vectors.dense(0.0,5.0,1.0),)],['features'])
-  indexer = VectorIndexer(inputCol='features',outputCol='indexed',maxCategories=2)#单列不同值的个数<=2的进行转化
-  indexerModel = indexer.fit(df)
-  indexVectored = indexerModel.transform(df)
-  indexVectored.show()
-  ```
+```python
+#StringIndexer 实例
+from pyspark.ml.feature import StringIndexer 
+from pyspark.sql import SparkSession
+spark=SparkSession.builder.master('local').appName('WordCountIndex').getOrCreate()
+df = spark.createDataFrame([(0,'a'),(1,'b'),(2,'c'),(3,'a'),(4,'a'),(5,'c')],['id','category'])
+indexer = StringIndexer(inputCol='category',outputCol='cateIndex') #新增一列cateIndex
+model = indexer.fit(df)
+indexed = model.transform(df)
+indexed.show()
+#IndexToString实例
+from pyspark.ml.feature import IndexToString
+toString = IndexToString(inputCol='cateIndex',outputCol='originCate') #新增一列originCate
+indexString = toString.transform(indexed)
+indexString.select('id','originCate').show()
+#VectorIndexer实例
+from pyspark.ml.feature import VectorIndexer
+from pyspark.ml.linalg import Vector,Vectors
+df = spark.createDataFrame([(Vectors.dense(-1.0,1.0,1.0),),(Vectors.dense(-1.0,3.0,1.0),),(Vectors.dense(0.0,5.0,1.0),)],['features'])
+indexer = VectorIndexer(inputCol='features',outputCol='indexed',maxCategories=2)#单列不同值的个数<=2的进行转化
+indexerModel = indexer.fit(df)
+indexVectored = indexerModel.transform(df)
+indexVectored.show()
+```
 
-  ```shell
-  #indexed.show()
-  +---+--------+---------+
-  | id|category|cateIndex|
-  +---+--------+---------+
-  |  0|       a|      0.0|
-  |  1|       b|      2.0|
-  |  2|       c|      1.0|
-  |  3|       a|      0.0|
-  |  4|       a|      0.0|
-  |  5|       c|      1.0|
-  +---+--------+---------+
-  #indexString.select('id','originCate').show()
-  +---+----------+
-  | id|originCate|
-  +---+----------+
-  |  0|         a|
-  |  1|         b|
-  |  2|         c|
-  |  3|         a|
-  |  4|         a|
-  |  5|         c|
-  +---+----------+
-  #indexVectored.show()
-  +--------------+-------------+
-  |      features|      indexed|
-  +--------------+-------------+
-  |[-1.0,1.0,1.0]|[1.0,1.0,0.0]|
-  |[-1.0,3.0,1.0]|[1.0,3.0,0.0]|
-  | [0.0,5.0,1.0]|[0.0,5.0,0.0]|
-  +--------------+-------------+
-  ```
+```shell
+#indexed.show()
++---+--------+---------+
+| id|category|cateIndex|
++---+--------+---------+
+|  0|       a|      0.0|
+|  1|       b|      2.0|
+|  2|       c|      1.0|
+|  3|       a|      0.0|
+|  4|       a|      0.0|
+|  5|       c|      1.0|
++---+--------+---------+
+#indexString.select('id','originCate').show()
++---+----------+
+| id|originCate|
++---+----------+
+|  0|         a|
+|  1|         b|
+|  2|         c|
+|  3|         a|
+|  4|         a|
+|  5|         c|
++---+----------+
+#indexVectored.show()
++--------------+-------------+
+|      features|      indexed|
++--------------+-------------+
+|[-1.0,1.0,1.0]|[1.0,1.0,0.0]|
+|[-1.0,3.0,1.0]|[1.0,3.0,0.0]|
+| [0.0,5.0,1.0]|[0.0,5.0,0.0]|
++--------------+-------------+
+```
 
-  
-
-  
-
-  - TF-IDF
+### 8.3 TF-IDF
 
   ```python
   from pyspark.ml.feature import HashingTF,IDF,Tokenizer
@@ -1436,53 +1417,60 @@ saprk.ml 基于DataFrame
   +-----+-----------------------------------------------------------------------------------+
   ```
 
-  - 逻辑斯地回归
+### 8.4 逻辑斯谛回归
 
-    ```python
-    from pyspark.ml.linalg import Vector,Vectors
-    from pyspark.sql import Row,functions
-    from pyspark.sql import SparkSession
-    from pyspark.ml.evaluation import MulticlassClassificationEvaluator
-    from pyspark.ml import Pipeline
-    from pyspark.ml.feature import IndexToString,StringIndexer,VectorIndexer,HashingTF,Tokenizer
-    from pyspark.ml.classification import LogisticRegression,LogisticRegressionModel,BinaryLogisticRegressionSummary,LogisticRegression
-    
-    
-    def f(x):
-        #x列表
-        rel={}
-        rel['features']=Vectors.dense(float(x[0]),float(x[1]),float(x[2]),float(x[3]))
-        rel['label'] =str(x[4])
-        return rel
-    spark=SparkSession.builder.master('local').appName('LogisticRegression').getOrCreate()
-    data = spark.sparkContext.textFile('file:///root/tmp/sparkPython/data/iris.txt').map(lambda x:x.split('\t')).map(lambda p:Row(**f(p))).toDF()
-    #data.show()
-    #标签列和特征列，进行索引并重命名
+  ```python
+from pyspark.ml.linalg import Vector, Vectors
+from pyspark.sql import Row, functions
+from pyspark.sql import SparkSession
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from pyspark.ml import Pipeline
+from pyspark.ml.feature import IndexToString, StringIndexer, VectorIndexer
+from pyspark.ml.classification import LogisticRegression
+
+
+def f(x):
+    # x列表
+    rel = {}
+    rel['features'] = Vectors.dense(float(x[0]), float(x[1]), float(x[2]), float(x[3]))
+    rel['label'] = str(x[4])
+    return rel
+
+
+if __name__ == '__main__':
+
+    spark = SparkSession.builder.master('local').appName('LogisticRegression').getOrCreate()
+    data = spark.sparkContext.textFile('file:///root/tmp/sparkPython/data/iris.txt').map(lambda x: x.split('\t')).map(
+        lambda p: Row(**f(p))).toDF()
+    # data.show()
+    # 标签列和特征列，进行索引并重命名
     labelIndexer = StringIndexer().setInputCol('label').setOutputCol('indexedLabel').fit(data)
-    featureIndexer=VectorIndexer().setInputCol('features').setOutputCol('indexedFeatures').fit(data)
-    #构建LogisticRegression参数
-    lr =LogisticRegression().setLabelCol('indexedLabel').setFeaturesCol('indexedFeatures').setMaxIter(100).setRegParam(0.3).setElasticNetParam(0.8) #迭代次数100次，规划化项0.3
-    #print(lr.explainParams())
-    #结果数字转字符串
-    labelConverter = IndexToString().setInputCol('prediction').setOutputCol('predicredLabel').setLabels(labelIndexer.labels)
-    #构建流水线
-    lrPipeline = Pipeline().setStages([labelIndexer,featureIndexer,lr,labelConverter])
-    trainingData,testData = data.randomSplit([0.7,0.3])
-    lrModel = lrPipeline.fit(trainingData) #训练得到model，为转化器
-    lrPred = lrModel.transform(testData)#预测，生成新DataFrame
-    #打印结果
-    preRel = lrPred.select('predicredLabel','label','features','probability').collect()
+    featureIndexer = VectorIndexer().setInputCol('features').setOutputCol('indexedFeatures').fit(data)
+    # 构建LogisticRegression参数
+    lr = LogisticRegression().setLabelCol('indexedLabel').setFeaturesCol('indexedFeatures').setMaxIter(100).setRegParam(
+        0.3).setElasticNetParam(0.8)  # 迭代次数100次，规划化项0.3
+    # print(lr.explainParams())
+    # 结果数字转字符串
+    labelConverter = IndexToString().setInputCol('prediction').setOutputCol('predicredLabel').setLabels(
+        labelIndexer.labels)
+    # 构建流水线
+    lrPipeline = Pipeline().setStages([labelIndexer, featureIndexer, lr, labelConverter])
+    trainingData, testData = data.randomSplit([0.7, 0.3])
+    lrModel = lrPipeline.fit(trainingData)  # 训练得到model，为转化器
+    lrPred = lrModel.transform(testData)  # 预测，生成新DataFrame
+    # 打印结果
+    preRel = lrPred.select('predicredLabel', 'label', 'features', 'probability').collect()
     for item in preRel:
-        print(str(item['label']),str(item['features']),str(item['probability']),str(item['predicredLabel']))
-    #评估
-    evaluator = MulticlassClassificationEvaluator().setLabelCol("indexedLabel").setPredictionCol('prediction')
-    lrAcc = evaluator.evaluate(lrPred)
-    ```
+        print(str(item['label']), str(item['features']), str(item['probability']), str(item['predicredLabel']))
+        # 评估
+        evaluator = MulticlassClassificationEvaluator().setLabelCol("indexedLabel").setPredictionCol('prediction')
+        lrAcc = evaluator.evaluate(lrPred)
+  ```
 
-    ```shell
+  ```shell
     #data.show()
     +-----------------+-----------+
-    |         features|      label|
+  |         features|      label|
     +-----------------+-----------+
     |[5.1,3.5,1.4,0.2]|Iris-setosa|
     |[4.9,3.0,1.4,0.2]|Iris-setosa|
@@ -1491,67 +1479,66 @@ saprk.ml 基于DataFrame
     |[5.0,3.6,1.4,0.2]|Iris-setosa|
     |[5.4,3.9,1.7,0.4]|Iris-setosa|
     |[4.6,3.4,1.4,0.3]|Iris-setosa|
-    ```
+  ```
 
-  - 决策树分类器
+### 8.5 决策树分类器
 
-    ```python
-    #/root/tmp/sparkPython/DecisionTreeClassifier.py
-    from pyspark.sql import SparkSession
-    from pyspark.ml.classification import DecisionTreeClassifier
-    from pyspark.ml import Pipeline, PipelineModel
-    from pyspark.ml.evaluation import MulticlassClassificationEvaluator
-    from pyspark.ml.linalg import Vector, Vectors
-    from pyspark.sql import Row
-    from pyspark.ml.feature import IndexToString, StringIndexer, VectorIndexer, HashingTF, Tokenizer
-    
-    
-    
-    def f(x):
-        # x列表
-        rel = {}
-        rel['features'] = Vectors.dense(float(x[0]), float(x[1]), float(x[2]), float(x[3]))
-        rel['label'] = str(x[4])
-        return rel
-    
-    
-    if __name__ == '__main__':
-        spark = SparkSession.builder.master('local').appName('LogisticRegression').getOrCreate()
-        
-        data = spark.sparkContext.textFile('file:///root/tmp/sparkPython/data/iris.txt').map(lambda x: x.split('\t')).map(
-            lambda p: Row(**f(p))).toDF()
-        labelIndexer = StringIndexer().setInputCol('label').setOutputCol('indexedLabel').fit(data)
-        featureIndexer = VectorIndexer().setInputCol('features').setOutputCol('indexedFeatures').setMaxCategories(4).fit(
-            data)
-        # 标签列和特征列，进行索引并重命名
-        labelConverter = IndexToString().setInputCol('prediction').setOutputCol('predicredLabel').setLabels(
-            labelIndexer.labels)
-        trainingData, testData = data.randomSplit([0.7, 0.3])
-        dtClassifier = DecisionTreeClassifier().setLabelCol('indexedLabel').setFeaturesCol('indexedFeatures')
-        dtPipeline = Pipeline().setStages([labelIndexer, featureIndexer, dtClassifier, labelConverter])
-        dtModel = dtPipeline.fit(trainingData)
-        dtPredictions = dtModel.transform(testData)
-        dtPredictions.select('predicredLabel', 'label', 'features').show(10)
-        evaluator = MulticlassClassificationEvaluator().setLabelCol('indexedLabel').setPredictionCol('prediction') #原始数字标签和预测标签比较
-        dtAccuracy = evaluator.evaluate(dtPredictions)
-        print(dtAccuracy)
-        treeModelClassifier = dtModel.stages[2] #第3个索引
-        print(str(treeModelClassifier.toDebugString))
-    
-    ```
+  ```python
+  #/root/tmp/sparkPython/DecisionTreeClassifier.py
+  from pyspark.sql import SparkSession
+  from pyspark.ml.classification import DecisionTreeClassifier
+  from pyspark.ml import Pipeline, PipelineModel
+  from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+  from pyspark.ml.linalg import Vector, Vectors
+  from pyspark.sql import Row
+  from pyspark.ml.feature import IndexToString, StringIndexer, VectorIndexer, HashingTF, Tokenizer
+  
+  
+  def f(x):
+      # x列表
+      rel = {}
+      rel['features'] = Vectors.dense(float(x[0]), float(x[1]), float(x[2]), float(x[3]))
+      rel['label'] = str(x[4])
+      return rel
+  
+  
+  if __name__ == '__main__':
+      spark = SparkSession.builder.master('local').appName('LogisticRegression').getOrCreate()
+  
+      data = spark.sparkContext.textFile('file:///root/tmp/sparkPython/data/iris.txt').map(lambda x: x.split('\t')).map(
+          lambda p: Row(**f(p))).toDF()
+      labelIndexer = StringIndexer().setInputCol('label').setOutputCol('indexedLabel').fit(data)
+      featureIndexer = VectorIndexer().setInputCol('features').setOutputCol('indexedFeatures').setMaxCategories(4).fit(
+          data)
+      # 标签列和特征列，进行索引并重命名
+      labelConverter = IndexToString().setInputCol('prediction').setOutputCol('predicredLabel').setLabels(
+          labelIndexer.labels)
+      trainingData, testData = data.randomSplit([0.7, 0.3])
+      dtClassifier = DecisionTreeClassifier().setLabelCol('indexedLabel').setFeaturesCol('indexedFeatures')
+      dtPipeline = Pipeline().setStages([labelIndexer, featureIndexer, dtClassifier, labelConverter])
+      dtModel = dtPipeline.fit(trainingData)
+      dtPredictions = dtModel.transform(testData)
+      dtPredictions.select('predicredLabel', 'label', 'features').show(10)
+      evaluator = MulticlassClassificationEvaluator().setLabelCol('indexedLabel').setPredictionCol('prediction') #原始数字标签和预测标签比较
+      dtAccuracy = evaluator.evaluate(dtPredictions)
+      print(dtAccuracy)
+      treeModelClassifier = dtModel.stages[2] #第3个索引
+      print(str(treeModelClassifier.toDebugString))
+  
+  ```
 
-    ```shell
-    #测试运行
-    source activate py365
-    python /root/tmp/sparkPython/DecisionTreeClassifier.py
-    #spark-submit方式
-    /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/DecisionTreeClassifier.py
-    ```
+  ```shell
+  #测试运行
+  source activate py365
+  python /root/tmp/sparkPython/DecisionTreeClassifier.py
+  #spark-submit方式
+  /root/bigdata/spark/bin/spark-submit /root/tmp/sparkPython/DecisionTreeClassifier.py
+  ```
 
-    ```shell
-    +---------------+---------------+-----------------+
+  ```shell
+  +---------------+---------------+-----------------+
     | predicredLabel|          label|         features|
-    +---------------+---------------+-----------------+
+  +---------------+---------------+-----------------+
     |    Iris-setosa|    Iris-setosa|[4.6,3.4,1.4,0.3]|
     |    Iris-setosa|    Iris-setosa|[4.7,3.2,1.3,0.2]|
     |    Iris-setosa|    Iris-setosa|[4.7,3.2,1.6,0.2]|
@@ -1580,5 +1567,9 @@ saprk.ml 基于DataFrame
           Predict: 2.0
        Else (feature 3 > 1.6)
         Predict: 2.0
-    ```
+  ```
+## 九、参考资料
 
+本教程主要参考厦门大学林教授的[视频](!https://www.bilibili.com/video/BV1oE411s7h7)亲自编写制作而成，大数据环境配置主要参考[黑马人工智能](!https://www.bilibili.com/video/BV1Yf4y117iC?from=search&seid=3459936430251610080)部分课程
+
+这些视频质量相对较高，但内容也比较多，大家可以根据自己掌握的情况适当补充学习
