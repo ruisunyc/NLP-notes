@@ -82,6 +82,11 @@ $ ssh-keygen -t rsa -C "your_email@example.com"# 设置ssh key，按回车即可
 $ cat ~/.ssh/id_rsa.pub #查看公钥
 $ ssh -T git@github.com #打开github，添加new ssh key，检验结果
 ```
+## 五 mac安装
+```python
+/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+ # mac下安装git和brew
+```
 
 
 
