@@ -1,12 +1,25 @@
 ### 常用命令
 
+- ### linux命令
+
+  ```shell
+  cat file |head -n 1 #查看首部一行数据
+  cat file |tail -n 1 #查看尾部一行数据
+  rm -rf files # 删除文件或文件夹
+  du -sh file  # 查看文件大小
+  tar -zcf #压缩文件
+  tar -zxf #解压缩
+  zip -r ranking_list.zip *  -i "ranking_list/*.py" # 压缩ranking_list文件夹及文件夹下所有的py文件
+  unzip -o ranking_list.zip #解压缩到当前文件夹下
+  ```
+
 - ### python环境
 
-```shell
-yum install vim #centos
-yum install -y gcc
-yum install unzip
-```
+  ```shell
+  yum install vim #centos
+  yum install -y gcc
+  yum install unzip
+  ```
 
 + ### ubuntu更换源
 
@@ -49,7 +62,7 @@ sudo chmod 777 home #修改文件权限
 deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
   ```
   
-## 查看硬件信息
+- ### 查看硬件信息
 
 ```shell
 yum install vim
@@ -71,11 +84,9 @@ cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l #查看CPU数量
 cat /proc/cpuinfo| grep "cpu cores"| uniq #查看CPU核数
 cat /proc/cpuinfo| grep "processor"| wc -l #查看逻辑CPU数目
 lscpu #CPU信息概览
-tar -zcf #压缩文件
-tar -zxf #解压缩
 ```
 
-centos网络配置
+- ### centos网络配置
 
 ```shell
 cat /etc/sysconfig/network-scripts/ifcfg-ens33 
@@ -87,7 +98,7 @@ systemctl stop firewalld.service    #关闭防火墙
 systemctl disable firewalld.service #禁止防火墙
 ```
 
-vim编辑器
+- ### vim编辑器
 
 ```python
 i #编辑模式
@@ -99,7 +110,7 @@ vim ~/.vimrc
 :set number #保存退出即可
 ```
 
-编辑网卡
+- ### 编辑网卡
 
 ```shell
 TYPE="Ethernet"
